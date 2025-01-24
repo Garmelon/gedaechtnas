@@ -1,15 +1,18 @@
-[package]
-name = "gedaechtnas"
+[workspace]
+resolver = "2"
+members = ["gdn-cli"]
+
+[workspace.package]
 version = "0.0.0"
 edition = "2021"
 
-[dependencies]
+[workspace.dependencies]
 anyhow = "1.0.95"
 clap = { version = "4.5.26", features = ["derive", "deprecated"] }
 directories = "6.0.0"
 gix = "0.69.1"
 
-[lints]
+[workspace.lints]
 rust.unsafe_code = { level = "forbid", priority = 1 }
 # Lint groups
 rust.deprecated_safe = "warn"

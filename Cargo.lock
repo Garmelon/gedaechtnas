@@ -345,7 +345,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "gedaechtnas"
+name = "gdn-cli"
 version = "0.0.0"
 dependencies = [
  "anyhow",

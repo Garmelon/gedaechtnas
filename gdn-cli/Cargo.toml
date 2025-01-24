@@ -1,0 +1,13 @@
+[package]
+name = "gdn-cli"
+version = { workspace = true }
+edition = { workspace = true }
+
+[dependencies]
+anyhow = { workspace = true }
+clap = { workspace = true }
+directories = { workspace = true }
+gix = { workspace = true }
+
+[lints]
+workspace = true
