@@ -1,6 +1,7 @@
 .gradle/
 build/
 
+/key.properties
 /local.properties
 /tauri.settings.gradle
 
