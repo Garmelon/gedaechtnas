@@ -2,5 +2,7 @@
     <!-- Base application theme. -->
     <style name="Theme.gdn_app" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/white</item>
+        <item name="android:statusBarColor">@color/black</item>
     </style>
 </resources>
