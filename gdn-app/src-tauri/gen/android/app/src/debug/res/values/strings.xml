@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">GedächtNAS (debug)</string>
+    <string name="main_activity_title">dbg: GedächtNAS</string>
+</resources>
