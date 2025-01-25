@@ -1,0 +1,10 @@
+[package]
+name = "gdn"
+version = { workspace = true }
+edition = { workspace = true }
+
+[dependencies]
+directories.workspace = true
+
+[lints]
+workspace = true

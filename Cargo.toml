@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["gdn-cli"]
+members = ["gdn", "gdn-cli"]
 
 [workspace.package]
 version = "0.0.0"
@@ -10,6 +10,7 @@ edition = "2021"
 anyhow = "1.0.95"
 clap = { version = "4.5.26", features = ["derive", "deprecated"] }
 directories = "6.0.0"
+gdn = { path = "gdn" }
 gix = "0.69.1"
 
 [workspace.lints]
