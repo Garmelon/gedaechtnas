@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+pushd gdn-cli
+cargo build --release
+popd
+
+pushd gdn-app
+pnpm install --frozen-lockfile
+pnpm tauri build
+popd
+
+echo "gdn-cli can be found at target/release/gdn-cli"
+echo "gdn-app can be found at target/release/gdn-app"

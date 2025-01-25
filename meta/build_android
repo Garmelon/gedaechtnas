@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+pushd gdn-app
+pnpm install --frozen-lockfile
+pnpm tauri android build --apk
+popd
+
+mkdir -p target/release/
+mv gdn-app/src-tauri/gen/android/app/build/outputs/apk/universal/release/app-universal-release.apk target/release/gdn-app.apk
+
+echo "gdn-app.apk can be found at target/release/gdn-app.apk"
