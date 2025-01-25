@@ -1445,6 +1445,7 @@ dependencies = [
 name = "gdn-app"
 version = "0.0.0"
 dependencies = [
+ "gdn",
  "serde",
  "serde_json",
  "tauri",

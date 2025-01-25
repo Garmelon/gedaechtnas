@@ -1,7 +1,27 @@
+use gdn::Paths;
+use tauri::{AppHandle, Manager};
+
 // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
 #[tauri::command]
-fn greet(name: &str) -> String {
-    format!("Hello, {}! You've been greeted from Rust!", name)
+fn greet(app_handle: AppHandle) -> String {
+    let mut lines = vec![];
+
+    lines.push(format!(
+        "      Local data dir: {}",
+        app_handle.path().app_local_data_dir().unwrap().display()
+    ));
+
+    lines.push(format!(
+        "  [Linux] State file: {:?}",
+        Paths::on_linux().map(|p| p.state_file())
+    ));
+
+    lines.push(format!(
+        "[Windows] State file: {:?}",
+        Paths::on_windows().map(|p| p.state_file())
+    ));
+
+    lines.join("\n")
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
