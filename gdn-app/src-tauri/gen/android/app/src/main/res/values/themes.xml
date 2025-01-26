@@ -1,8 +1,9 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Theme.gdn_app" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <!-- Customize your theme here. -->
+        <!-- background color of the icon in the multitasking view -->
         <item name="colorPrimary">@color/white</item>
-        <item name="android:statusBarColor">@color/black</item>
+        <!-- background color of the status bar -->
+        <item name="colorPrimaryDark">@color/black</item>
     </style>
 </resources>
