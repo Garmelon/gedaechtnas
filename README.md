@@ -6,7 +6,7 @@
 Storage. The combination of the two is a bad pun that requires specialized
 hardware to even type properly.
 
-In places where the *proper name* — "GedächtNAS", including the umlaut and
-capitalization — can't be used, the *technical name* — "gedaechtnas", always
-lowercase — or the *abbreviated name* — "gdn" — shall be used instead. Other
+In places where the _proper name_ — "GedächtNAS", including the umlaut and
+capitalization — can't be used, the _technical name_ — "gedaechtnas", always
+lowercase — or the _abbreviated name_ — "gdn" — shall be used instead. Other
 variations or spellings are incorrect.
