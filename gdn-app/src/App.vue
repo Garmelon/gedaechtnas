@@ -13,6 +13,7 @@ async function greet() {
 
 <template>
   <main class="container">
+    <p class="font-bold underline">Hello</p>
     <h1>Welcome to Tauri + Vue</h1>
 
     <div class="row">
