@@ -1,29 +1,24 @@
 <script setup lang="ts">
-// const sample = "Apps is a gude";
+import Navbar from "./components/Navbar.vue";
 </script>
 
 <template>
-  <div class="flex items-baseline justify-between bg-black p-2 text-white">
-    <div
-      class="cursor-default rounded-md bg-neutral-800 pl-2 pr-1 text-lg hover:bg-neutral-700 active:bg-neutral-500"
-    >
-      GedächtNAS<span class="relative -top-1 select-none"> ⌄</span>
-    </div>
-    <div
-      class="cursor-pointer select-none rounded-md bg-neutral-800 px-2 text-xl hover:bg-neutral-700 active:bg-neutral-500"
-    >
-      ⚙
+  <div class="flex h-screen flex-col">
+    <Navbar />
+    <div class="h-full overflow-auto">
+      <template v-for="_ in 6">
+        <p class="p-1 font-thin">The quick brown fox Qiii</p>
+        <p class="p-1 font-extralight">The quick brown fox Qiii</p>
+        <p class="p-1 font-light">The quick brown fox Qiii</p>
+        <p class="p-1 font-normal">The quick brown fox Qiii</p>
+        <p class="p-1 font-medium">The quick brown fox Qiii</p>
+        <p class="p-1 font-semibold">The quick brown fox Qiii</p>
+        <p class="p-1 font-bold">The quick brown fox Qiii</p>
+        <p class="p-1 font-extrabold">The quick brown fox Qiii</p>
+        <p class="p-1 font-black">The quick brown fox Qiii</p>
+      </template>
     </div>
   </div>
-  <p class="p-1 font-thin">The quick brown fox Qiii</p>
-  <p class="p-1 font-extralight">The quick brown fox Qiii</p>
-  <p class="p-1 font-light">The quick brown fox Qiii</p>
-  <p class="p-1 font-normal">The quick brown fox Qiii</p>
-  <p class="p-1 font-medium">The quick brown fox Qiii</p>
-  <p class="p-1 font-semibold">The quick brown fox Qiii</p>
-  <p class="p-1 font-bold">The quick brown fox Qiii</p>
-  <p class="p-1 font-extrabold">The quick brown fox Qiii</p>
-  <p class="p-1 font-black">The quick brown fox Qiii</p>
 </template>
 
 <style>
