@@ -3,7 +3,7 @@ import Navbar from "./components/Navbar.vue";
 </script>
 
 <template>
-  <div class="flex h-screen flex-col">
+  <div class="flex h-screen touch-pan-x touch-pan-y flex-col">
     <Navbar />
     <div class="h-full overflow-auto">
       <template v-for="_ in 6">
