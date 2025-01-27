@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+git clean -dfx \
+    -e gdn-app/src-tauri/gen/android/.idea/ \
+    -e gdn-app/src-tauri/gen/android/key.properties \
+    -e gdn-app/src-tauri/gen/android/local.properties \
