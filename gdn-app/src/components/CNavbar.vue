@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useReposStore } from "@/stores/repos";
 import { RiDeleteBinFill, RiSettings3Fill } from "@remixicon/vue";
+import CNavbarButton from "./CNavbarButton.vue";
 import CNavbarDropdown from "./CNavbarDropdown.vue";
 
 const repos = useReposStore();
@@ -15,19 +16,16 @@ const repos = useReposStore();
     </div>
 
     <!-- Temporary delete button until I add proper repo settings -->
-    <div
+    <CNavbarButton
       v-show="repos.selectedRepo !== undefined"
-      class="flex select-none items-center rounded-md bg-neutral-800 px-2 hover:bg-neutral-700 active:bg-neutral-500"
       @click="repos.removeRepo(repos.selectedRepoId)"
     >
       <RiDeleteBinFill size="16px" class="inline" />
-    </div>
+    </CNavbarButton>
 
     <!-- Nothing hooked up yet -->
-    <div
-      class="flex select-none items-center rounded-md bg-neutral-800 px-2 hover:bg-neutral-700 active:bg-neutral-500"
-    >
+    <CNavbarButton>
       <RiSettings3Fill size="16px" class="inline" />
-    </div>
+    </CNavbarButton>
   </div>
 </template>
