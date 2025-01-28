@@ -40,7 +40,8 @@ export const useReposStore = defineStore("repos", () => {
     }
   }
 
-  function selectRepo(id: string) {
+  function selectRepo(id: string | undefined) {
+    if (id === undefined) return;
     if (repos.value.get(id) === undefined) return;
     selectedRepoId.value = id;
   }
