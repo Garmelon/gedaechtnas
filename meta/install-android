@@ -5,5 +5,8 @@ $ANDROID_HOME/platform-tools/adb devices
 
 echo "Waiting to give phone a chance to connect"
 sleep 5
+echo
+
+$ANDROID_HOME/platform-tools/adb devices
 
 $ANDROID_HOME/platform-tools/adb install -r target/release/gdn-app.apk
