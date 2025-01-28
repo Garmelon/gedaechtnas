@@ -1,22 +1,22 @@
 <script setup lang="ts">
+import CNote from "./components/CNote.vue";
 import Navbar from "./components/Navbar.vue";
+import { Note } from "./types";
+
+const testNote: Note = {
+  text: "hello",
+  children: [
+    { text: "world", children: [] },
+    { text: "foo", children: [] },
+  ],
+};
 </script>
 
 <template>
   <div class="flex h-screen touch-pan-x touch-pan-y flex-col">
     <Navbar />
-    <div class="h-full overflow-auto">
-      <template v-for="_ in 6">
-        <p class="p-1 font-thin">The quick brown fox Qiii</p>
-        <p class="p-1 font-extralight">The quick brown fox Qiii</p>
-        <p class="p-1 font-light">The quick brown fox Qiii</p>
-        <p class="p-1 font-normal">The quick brown fox Qiii</p>
-        <p class="p-1 font-medium">The quick brown fox Qiii</p>
-        <p class="p-1 font-semibold">The quick brown fox Qiii</p>
-        <p class="p-1 font-bold">The quick brown fox Qiii</p>
-        <p class="p-1 font-extrabold">The quick brown fox Qiii</p>
-        <p class="p-1 font-black">The quick brown fox Qiii</p>
-      </template>
+    <div class="h-full overflow-auto px-2 py-1">
+      <CNote :note="testNote" />
     </div>
   </div>
 </template>
