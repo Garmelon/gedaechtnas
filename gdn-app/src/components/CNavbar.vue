@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { RiDeleteBinFill, RiSettings3Fill } from "@remixicon/vue";
-import NavbarDropdown from "./NavbarDropdown.vue";
 import { useReposStore } from "@/stores/repos";
+import { RiDeleteBinFill, RiSettings3Fill } from "@remixicon/vue";
+import CNavbarDropdown from "./CNavbarDropdown.vue";
 
 const repos = useReposStore();
 </script>
@@ -11,7 +11,7 @@ const repos = useReposStore();
     <!-- The div is necessary because of the delete button, otherwise I could
     just use justify-between -->
     <div class="mr-auto overflow-hidden">
-      <NavbarDropdown />
+      <CNavbarDropdown />
     </div>
 
     <!-- Temporary delete button until I add proper repo settings -->

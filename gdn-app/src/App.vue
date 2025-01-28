@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import CNavbar from "./components/CNavbar.vue";
 import CNote from "./components/CNote.vue";
-import Navbar from "./components/Navbar.vue";
 import { Note } from "./types";
 
 const testNote: Note = {
@@ -14,7 +14,7 @@ const testNote: Note = {
 
 <template>
   <div class="flex h-screen touch-pan-x touch-pan-y flex-col">
-    <Navbar />
+    <CNavbar />
     <div class="h-full overflow-auto px-2 py-1">
       <CNote :note="testNote" />
     </div>

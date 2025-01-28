@@ -7,7 +7,7 @@ import {
   RiArrowDropUpLine,
 } from "@remixicon/vue";
 import { ref, useTemplateRef } from "vue";
-import NavbarDropdownEntry from "./NavbarDropdownEntry.vue";
+import CNavbarDropdownEntry from "./CNavbarDropdownEntry.vue";
 
 const repos = useReposStore();
 
@@ -77,15 +77,16 @@ function onSelectRepo(id: string) {
     style="scrollbar-gutter: stable"
     :style="floatingStyles"
   >
-    <NavbarDropdownEntry
+    <CNavbarDropdownEntry
       v-for="repo of repos.reposByName"
       :class="{ 'font-medium': repo.id === repos.selectedRepoId }"
       @click="onSelectRepo(repo.id)"
-      >{{ repo.name }}</NavbarDropdownEntry
     >
+      {{ repo.name }}
+    </CNavbarDropdownEntry>
     <hr v-if="repos.reposByName.length > 0" class="m-1 text-neutral-700" />
-    <NavbarDropdownEntry class="italic" @click="onAddNewRepo">
+    <CNavbarDropdownEntry class="italic" @click="onAddNewRepo">
       <RiAddLine size="16px" class="-ml-1 inline" /> add new repo
-    </NavbarDropdownEntry>
+    </CNavbarDropdownEntry>
   </div>
 </template>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Note as Note } from "@/types";
+import { Note } from "@/types";
 
 const props = defineProps<{ note: Note }>();
 </script>
