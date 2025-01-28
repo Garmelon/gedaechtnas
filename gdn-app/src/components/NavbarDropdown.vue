@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useReposStore } from "@/stores/repos";
-import { offset, size, useFloating } from "@floating-ui/vue";
+import { autoUpdate, offset, size, useFloating } from "@floating-ui/vue";
 import {
   RiAddLine,
   RiArrowDropDownLine,
@@ -17,6 +17,7 @@ const open = ref(false);
 const reference = useTemplateRef("reference");
 const floating = useTemplateRef("floating");
 const { floatingStyles } = useFloating(reference, floating, {
+  whileElementsMounted: autoUpdate,
   placement: "bottom-start",
   middleware: [
     offset(4),
@@ -73,6 +74,7 @@ function onSelectRepo(id: string) {
     v-if="open"
     ref="floating"
     class="absolute left-0 top-0 w-fit min-w-48 overflow-auto rounded-md bg-neutral-800 font-light"
+    style="scrollbar-gutter: stable"
     :style="floatingStyles"
   >
     <NavbarDropdownEntry
