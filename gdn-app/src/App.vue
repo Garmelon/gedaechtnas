@@ -1,18 +1,11 @@
 <script setup lang="ts">
 import Navbar from "./components/Navbar.vue";
-import Test from "./components/Test.vue";
-import { useFooStore } from "./stores/foo";
-
-const foo = useFooStore();
 </script>
 
 <template>
   <div class="flex h-screen touch-pan-x touch-pan-y flex-col">
     <Navbar />
     <div class="h-full overflow-auto">
-      <Test />
-      <br />
-      Yes, it's now {{ foo.name }}.
       <template v-for="_ in 6">
         <p class="p-1 font-thin">The quick brown fox Qiii</p>
         <p class="p-1 font-extralight">The quick brown fox Qiii</p>
