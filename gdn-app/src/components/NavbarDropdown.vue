@@ -32,14 +32,18 @@ function onAddNewRepo() {
   <!-- Navbar entry -->
   <div
     ref="reference"
-    class="relative cursor-default rounded-md bg-neutral-800 pl-2 text-lg font-light hover:bg-neutral-700 active:bg-neutral-500"
+    class="relative flex flex-shrink cursor-default overflow-hidden whitespace-nowrap rounded-md bg-neutral-800 pl-2 text-lg font-light hover:bg-neutral-700 active:bg-neutral-500"
     @click="open = !open"
   >
     <span v-if="repos.selectedRepo">{{ repos.selectedRepo.name }}</span>
-    <span v-else class="italic">no repo selected</span>
+    <span v-else class="overflow-hidden overflow-ellipsis italic">
+      no repo selected
+    </span>
 
-    <RiArrowDropUpLine v-if="open" class="inline" />
-    <RiArrowDropDownLine v-else class="inline" />
+    <div>
+      <RiArrowDropUpLine v-if="open" class="inline" />
+      <RiArrowDropDownLine v-else class="inline" />
+    </div>
   </div>
 
   <!-- Close dropdown when clicking outside it -->
@@ -63,7 +67,7 @@ function onAddNewRepo() {
     >
     <hr v-if="repos.reposByName.length > 0" class="m-1 text-neutral-700" />
     <NavbarDropdownEntry class="italic" @click="onAddNewRepo">
-      <RiAddLine class="-ml-2 inline h-4" />add new repo
+      <RiAddLine size="16px" class="-ml-1 inline" /> add new repo
     </NavbarDropdownEntry>
   </div>
 </template>

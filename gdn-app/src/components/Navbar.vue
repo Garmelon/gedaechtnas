@@ -4,12 +4,12 @@ import NavbarDropdown from "./NavbarDropdown.vue";
 </script>
 
 <template>
-  <div class="flex justify-between bg-black p-2 text-white">
+  <div class="flex justify-between gap-1 bg-black p-2 text-white">
     <NavbarDropdown />
     <div
-      class="flex items-center rounded-md bg-neutral-800 px-1 hover:bg-neutral-700 active:bg-neutral-500"
+      class="flex items-center rounded-md bg-neutral-800 px-2 hover:bg-neutral-700 active:bg-neutral-500"
     >
-      <RiSettings3Fill class="h-4" />
+      <RiSettings3Fill size="16px" class="inline" />
     </div>
   </div>
 </template>
