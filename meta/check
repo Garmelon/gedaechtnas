@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+pushd gdn-app
+pnpm build
+popd
+
+cargo clippy
