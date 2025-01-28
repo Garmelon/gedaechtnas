@@ -22,8 +22,14 @@ const { floatingStyles } = useFloating(reference, floating, {
 });
 
 function onAddNewRepo() {
-  repos.addRepo({ id: "test", name: "test" });
+  const id = crypto.randomUUID();
+  repos.addRepo({ id, name: id });
   console.log(repos.selectedRepo);
+  open.value = false;
+}
+
+function onSelectRepo(id: string) {
+  repos.selectRepo(id);
   open.value = false;
 }
 </script>
@@ -32,15 +38,17 @@ function onAddNewRepo() {
   <!-- Navbar entry -->
   <div
     ref="reference"
-    class="relative flex flex-shrink cursor-default overflow-hidden whitespace-nowrap rounded-md bg-neutral-800 pl-2 text-lg font-light hover:bg-neutral-700 active:bg-neutral-500"
+    class="relative flex cursor-default whitespace-nowrap rounded-md bg-neutral-800 pl-2 text-lg font-light hover:bg-neutral-700"
     @click="open = !open"
   >
-    <span v-if="repos.selectedRepo">{{ repos.selectedRepo.name }}</span>
+    <span v-if="repos.selectedRepo" class="overflow-hidden overflow-ellipsis">{{
+      repos.selectedRepo.name
+    }}</span>
     <span v-else class="overflow-hidden overflow-ellipsis italic">
       no repo selected
     </span>
 
-    <div>
+    <div class="text-neutral-400">
       <RiArrowDropUpLine v-if="open" class="inline" />
       <RiArrowDropDownLine v-else class="inline" />
     </div>
@@ -63,6 +71,7 @@ function onAddNewRepo() {
     <NavbarDropdownEntry
       v-for="repo of repos.reposByName"
       :class="{ 'font-medium': repo.id === repos.selectedRepoId }"
+      @click="onSelectRepo(repo.id)"
       >{{ repo.name }}</NavbarDropdownEntry
     >
     <hr v-if="repos.reposByName.length > 0" class="m-1 text-neutral-700" />

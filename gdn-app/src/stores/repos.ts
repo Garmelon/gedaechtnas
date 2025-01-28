@@ -30,7 +30,8 @@ export const useReposStore = defineStore("repos", () => {
     selectedRepoId.value = repo.id;
   }
 
-  function removeRepo(id: string) {
+  function removeRepo(id: string | undefined) {
+    if (id === undefined) return;
     const i = repoIdsByName.value.indexOf(id);
     repos.value.delete(id);
     if (i >= 0) {
@@ -51,5 +52,6 @@ export const useReposStore = defineStore("repos", () => {
     selectedRepoId,
     addRepo,
     removeRepo,
+    selectRepo,
   };
 });
