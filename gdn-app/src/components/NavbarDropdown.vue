@@ -49,9 +49,9 @@ function onSelectRepo(id: string) {
     class="relative flex cursor-default whitespace-nowrap rounded-md bg-neutral-800 pl-2 text-lg font-light hover:bg-neutral-700"
     @click="open = !open"
   >
-    <span v-if="repos.selectedRepo" class="overflow-hidden overflow-ellipsis">{{
-      repos.selectedRepo.name
-    }}</span>
+    <span v-if="repos.selectedRepo" class="overflow-hidden overflow-ellipsis">
+      {{ repos.selectedRepo.name }}
+    </span>
     <span v-else class="overflow-hidden overflow-ellipsis italic">
       no repo selected
     </span>
