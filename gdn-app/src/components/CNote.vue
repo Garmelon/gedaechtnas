@@ -1,17 +1,20 @@
 <script setup lang="ts">
 import { useNotesStore } from "@/stores/notes";
+import { useUiStore } from "@/stores/ui";
 import { RiArrowDownSLine, RiArrowRightSLine } from "@remixicon/vue";
 import { computed, ref, watchEffect } from "vue";
 
-const { notes } = useNotesStore();
+const notes = useNotesStore();
+const ui = useUiStore();
 
 const props = defineProps<{
   noteId?: string;
-  focusPath?: number[];
+  path: number[]; // From root to here
+  focusPath?: number[]; // From here to focus
 }>();
 
 const note = computed(() =>
-  props.noteId ? notes.get(props.noteId) : undefined,
+  props.noteId ? notes.notes.get(props.noteId) : undefined,
 );
 
 // Our children and their locally unique keys.
@@ -30,7 +33,6 @@ const children = computed(() => {
 
 const open = ref(false);
 
-// We're the node pointed to by the `focusPath`.
 const focused = computed(() => props.focusPath?.length === 0);
 
 // We want to set open to true when we're on the focus path, but then it should
@@ -45,24 +47,55 @@ function focusPathFor(index: number): number[] | undefined {
   if (index !== props.focusPath[0]) return undefined;
   return props.focusPath.slice(1);
 }
+
+function focusOnThis() {
+  ui.focusPath = props.path.slice();
+}
+
+function toggleOpen() {
+  if (props.focusPath) {
+    // We're on the focus path, so the situation is one of these cases:
+    //
+    // 1. We're closed and focused, in which case this does nothing.
+    // 2. We're open and focused, in which case this does nothing.
+    // 3. We're open and on the focus path, in which case closing will hide the
+    //    actual focus and we should be focused instead.
+    //
+    // In any case, we can just...
+    focusOnThis();
+  }
+
+  open.value = !open.value;
+}
+
+function onClick() {
+  if (!focused.value) {
+    focusOnThis();
+    return;
+  }
+
+  toggleOpen();
+}
 </script>
 
 <template>
   <div class="flex flex-col">
     <div
-      class="flex flex-row gap-1"
-      :class="focused ? ['bg-neutral-200'] : []"
-      @click="open = !open"
+      class="flex flex-row gap-1 pl-1"
+      :class="focused ? ['bg-neutral-200'] : ['hover:bg-neutral-100']"
+      @click="onClick"
     >
       <!-- Fold/unfold symbol -->
-      <div v-if="children.length > 0 && !open" class="flex items-center">
-        <RiArrowRightSLine size="16px" />
-      </div>
-      <div v-else-if="children.length > 0" class="flex items-center">
-        <RiArrowDownSLine size="16px" />
-      </div>
-      <div v-else class="flex items-center">
-        <RiArrowRightSLine size="16px" class="text-neutral-400" />
+      <div class="flex items-center">
+        <div
+          class="rounded"
+          :class="focused ? ['hover:bg-neutral-300'] : ['hover:bg-neutral-200']"
+          @click.stop="toggleOpen()"
+        >
+          <RiArrowRightSLine v-if="children.length > 0 && !open" size="16px" />
+          <RiArrowDownSLine v-else-if="children.length > 0" size="16px" />
+          <RiArrowRightSLine v-else size="16px" class="text-neutral-400" />
+        </div>
       </div>
 
       <!-- Text -->
@@ -71,14 +104,12 @@ function focusPathFor(index: number): number[] | undefined {
     </div>
 
     <!-- Children -->
-    <div
-      v-if="open && children.length > 0"
-      class="flex flex-col border-l border-neutral-300 pl-3"
-    >
+    <div v-if="open && children.length > 0" class="flex flex-col pl-2">
       <CNote
         v-for="([noteId, key], index) in children"
         :key
         :note-id
+        :path="path.concat(index)"
         :focusPath="focusPathFor(index)"
       />
     </div>
