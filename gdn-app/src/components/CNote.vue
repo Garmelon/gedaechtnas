@@ -7,13 +7,14 @@ const { notes } = useNotesStore();
 
 const props = defineProps<{
   noteId?: string;
-  forceOpen?: boolean;
+  focusPath?: number[];
 }>();
 
 const note = computed(() =>
   props.noteId ? notes.get(props.noteId) : undefined,
 );
 
+// Our children and their locally unique keys.
 const children = computed(() => {
   if (note.value === undefined) return [];
   const seen = new Map<string, number>();
@@ -29,16 +30,30 @@ const children = computed(() => {
 
 const open = ref(false);
 
-// We want to set open to true when forced, but then it should stay true. Hence
-// a computed() combining open and forceOpen would not suffice.
+// We're the node pointed to by the `focusPath`.
+const focused = computed(() => props.focusPath?.length === 0);
+
+// We want to set open to true when we're on the focus path, but then it should
+// stay true. Hence a computed() combining open and forceOpen would not suffice.
 watchEffect(() => {
-  if (props.forceOpen) open.value = true;
+  open.value; // Ensure we stay open if `open.value = false` is attempted
+  if (props.focusPath && props.focusPath.length > 0) open.value = true;
 });
+
+function focusPathFor(index: number): number[] | undefined {
+  if (!props.focusPath) return undefined;
+  if (index !== props.focusPath[0]) return undefined;
+  return props.focusPath.slice(1);
+}
 </script>
 
 <template>
   <div class="flex flex-col">
-    <div class="flex flex-row gap-1" @click="open = !open">
+    <div
+      class="flex flex-row gap-1"
+      :class="focused ? ['bg-neutral-200'] : []"
+      @click="open = !open"
+    >
       <!-- Fold/unfold symbol -->
       <div v-if="children.length > 0 && !open" class="flex items-center">
         <RiArrowRightSLine size="16px" />
@@ -60,7 +75,12 @@ watchEffect(() => {
       v-if="open && children.length > 0"
       class="flex flex-col border-l border-neutral-300 pl-3"
     >
-      <CNote v-for="[noteId, key] in children" :key :note-id />
+      <CNote
+        v-for="([noteId, key], index) in children"
+        :key
+        :note-id
+        :focusPath="focusPathFor(index)"
+      />
     </div>
   </div>
 </template>
