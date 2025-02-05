@@ -48,20 +48,21 @@ function createSomeNotes() {
     </div>
 
     <!-- Temporary button for testing -->
-    <CNavbarButton @click="createSomeNotes">
+    <CNavbarButton title="Create dummy note tree" @click="createSomeNotes">
       <RiNodeTree size="16px" class="inline" />
     </CNavbarButton>
 
     <!-- Temporary delete button until I add proper repo settings -->
     <CNavbarButton
       v-show="repos.selectedRepo !== undefined"
+      title="Delete repo"
       @click="repos.removeRepo(repos.selectedRepoId)"
     >
       <RiDeleteBinFill size="16px" class="inline" />
     </CNavbarButton>
 
     <!-- Nothing hooked up yet -->
-    <CNavbarButton>
+    <CNavbarButton title="Settings">
       <RiSettings3Fill size="16px" class="inline" />
     </CNavbarButton>
   </div>
