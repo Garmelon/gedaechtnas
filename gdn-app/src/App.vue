@@ -1,22 +1,16 @@
 <script setup lang="ts">
 import CNavbar from "./components/CNavbar.vue";
 import CNote from "./components/CNote.vue";
-import { Note } from "./types";
+import { useUiStore } from "./stores/ui";
 
-const testNote: Note = {
-  text: "hello",
-  children: [
-    { text: "world", children: [] },
-    { text: "foo", children: [] },
-  ],
-};
+const ui = useUiStore();
 </script>
 
 <template>
   <div class="flex h-screen touch-pan-x touch-pan-y flex-col">
     <CNavbar />
     <div class="h-full overflow-auto px-2 py-1">
-      <CNote :note="testNote" />
+      <CNote :id="ui.anchor" />
     </div>
   </div>
 </template>
