@@ -1,13 +1,19 @@
 <script setup lang="ts">
 import { useNotesStore } from "@/stores/notes";
 import { RiArrowDownSLine, RiArrowRightSLine } from "@remixicon/vue";
-import { computed, ref } from "vue";
+import { computed, ref, watchEffect } from "vue";
 
 const { notes } = useNotesStore();
 
-const props = defineProps<{ id: string | undefined }>();
+const props = defineProps<{
+  noteId?: string;
+  forceOpen?: boolean;
+}>();
 
-const note = computed(() => (props.id ? notes.get(props.id) : undefined));
+const note = computed(() =>
+  props.noteId ? notes.get(props.noteId) : undefined,
+);
+
 const children = computed(() => {
   if (note.value === undefined) return [];
   const seen = new Map<string, number>();
@@ -22,6 +28,12 @@ const children = computed(() => {
 });
 
 const open = ref(false);
+
+// We want to set open to true when forced, but then it should stay true. Hence
+// a computed() combining open and forceOpen would not suffice.
+watchEffect(() => {
+  if (props.forceOpen) open.value = true;
+});
 </script>
 
 <template>
@@ -45,10 +57,10 @@ const open = ref(false);
 
     <!-- Children -->
     <div
-      v-if="note && open"
+      v-if="open && children.length > 0"
       class="flex flex-col border-l border-neutral-300 pl-3"
     >
-      <CNote v-for="[id, key] in children" :id :key></CNote>
+      <CNote v-for="[noteId, key] in children" :key :note-id />
     </div>
   </div>
 </template>
