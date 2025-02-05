@@ -8,36 +8,47 @@ const { notes } = useNotesStore();
 const props = defineProps<{ id: string | undefined }>();
 
 const note = computed(() => (props.id ? notes.get(props.id) : undefined));
+const children = computed(() => {
+  if (note.value === undefined) return [];
+  const seen = new Map<string, number>();
+  const children: [string, string][] = [];
+  for (const id of note.value.children) {
+    const n = seen.get(id) || 0;
+    seen.set(id, n + 1);
+    const key = `${id}-${n}`;
+    children.push([id, key]);
+  }
+  return children;
+});
+
 const open = ref(false);
 </script>
 
 <template>
   <div class="flex flex-col">
     <div class="flex flex-row gap-1" @click="open = !open">
-      <div
-        v-if="note && note.children.length > 0 && !open"
-        class="flex items-center"
-      >
+      <!-- Fold/unfold symbol -->
+      <div v-if="children.length > 0 && !open" class="flex items-center">
         <RiArrowRightSLine size="16px" />
       </div>
-      <div
-        v-else-if="note && note.children.length > 0"
-        class="flex items-center"
-      >
+      <div v-else-if="children.length > 0" class="flex items-center">
         <RiArrowDownSLine size="16px" />
       </div>
       <div v-else class="flex items-center">
         <RiArrowRightSLine size="16px" class="text-neutral-400" />
       </div>
-      <!-- <div v-else class="text-neutral-500">v</div> -->
+
+      <!-- Text -->
       <div v-if="note">{{ note.text }}</div>
       <div v-else class="font-light italic">note not found</div>
     </div>
+
+    <!-- Children -->
     <div
       v-if="note && open"
       class="flex flex-col border-l border-neutral-300 pl-3"
     >
-      <CNote v-for="child in note.children" :id="child"></CNote>
+      <CNote v-for="[id, key] in children" :id :key></CNote>
     </div>
   </div>
 </template>

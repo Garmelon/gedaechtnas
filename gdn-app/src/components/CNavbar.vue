@@ -4,29 +4,38 @@ import { RiDeleteBinFill, RiNodeTree, RiSettings3Fill } from "@remixicon/vue";
 import CNavbarButton from "./CNavbarButton.vue";
 import CNavbarDropdown from "./CNavbarDropdown.vue";
 import { useUiStore } from "@/stores/ui";
-import { useNotesStore } from "@/stores/notes";
+import { Note, useNotesStore } from "@/stores/notes";
 
 const repos = useReposStore();
 const notes = useNotesStore();
 const ui = useUiStore();
 
-function createSomeNodes() {
+function mkNote(id: string, ...children: string[]): Note {
+  return notes.addNote({ id, text: id, children });
+}
+
+function createSomeNotes() {
   notes.clearNotes();
 
-  const root = notes.addNote("root");
+  const n2n1 = mkNote("n2n1");
+  const n2n2 = mkNote("n2n2");
+  const n2n3 = mkNote("n2n3");
+
+  const n1 = mkNote("n1");
+  const n2 = mkNote("n2", n2n1.id, n2n2.id, n2n3.id);
+  const n3 = mkNote("n3");
+  const n4 = mkNote("n4");
+  const n5 = mkNote("n5", "NaN (not a note)");
+
+  const root = mkNote("root", n1.id, n2.id, n3.id, n4.id, n5.id, n2.id);
+
   ui.anchor = root.id;
 
-  notes.appendChildNote(root.id, "n1")!;
-  const n2 = notes.appendChildNote(root.id, "n2")!;
-  notes.appendChildNote(root.id, "n3")!;
-  notes.appendChildNote(root.id, "n4")!;
-  const n5 = notes.appendChildNote(root.id, "n5")!;
-
-  notes.appendChildNote(n2.id, "n2n1")!;
-  notes.appendChildNote(n2.id, "n2n2")!;
-  notes.appendChildNote(n2.id, "n2n3")!;
-
-  n5.children.push("NaN (Not a Note)");
+  // Shuffle children of root
+  root.children = root.children
+    .map((it) => ({ it, rand: Math.random() }))
+    .sort((a, b) => a.rand - b.rand)
+    .map(({ it }) => it);
 }
 </script>
 
@@ -39,7 +48,7 @@ function createSomeNodes() {
     </div>
 
     <!-- Temporary button for testing -->
-    <CNavbarButton @click="createSomeNodes">
+    <CNavbarButton @click="createSomeNotes">
       <RiNodeTree size="16px" class="inline" />
     </CNavbarButton>
 

@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
 
-type Note = {
+export type Note = {
   id: string;
   text: string;
   children: string[];
@@ -10,16 +10,26 @@ type Note = {
 export const useNotesStore = defineStore("notes", () => {
   const notes = ref<Map<string, Note>>(new Map());
 
-  function addNote(text: string): Note {
-    const id = crypto.randomUUID();
-    notes.value.set(id, { id, text, children: [] });
-    return notes.value.get(id)!; // Re-getting so returned Note is reactive
+  function addNote(note: Note): Note {
+    notes.value.set(note.id, note);
+    return notes.value.get(note.id)!; // Re-getting so returned Note is reactive
   }
 
-  function appendChildNote(parentId: string, text: string): Note | undefined {
+  function addNewNote(text: string): Note {
+    return addNote({
+      id: crypto.randomUUID(),
+      text,
+      children: [],
+    });
+  }
+
+  function appendNewChildNote(
+    parentId: string,
+    text: string,
+  ): Note | undefined {
     const parent = notes.value.get(parentId);
     if (parent === undefined) return undefined;
-    const note = addNote(text);
+    const note = addNewNote(text);
     parent.children.push(note.id);
     return note;
   }
@@ -31,7 +41,8 @@ export const useNotesStore = defineStore("notes", () => {
   return {
     notes,
     addNote,
-    appendChildNote,
+    addNewNote,
+    appendNewChildNote,
     clearNotes,
   };
 });
