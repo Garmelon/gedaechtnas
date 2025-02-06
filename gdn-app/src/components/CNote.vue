@@ -1,21 +1,25 @@
 <script setup lang="ts">
 import { useNotesStore } from "@/stores/notes";
 import { useUiStore } from "@/stores/ui";
-import { RiArrowDownSLine, RiArrowRightSLine } from "@remixicon/vue";
+import {
+  RiArrowDownSLine,
+  RiArrowRightSLine,
+  RiStickyNoteAddLine,
+} from "@remixicon/vue";
 import { computed, ref, watchEffect } from "vue";
+import CNoteButton from "./CNoteButton.vue";
+import CNoteCreator from "./CNoteCreator.vue";
 
 const notes = useNotesStore();
 const ui = useUiStore();
 
 const props = defineProps<{
-  noteId?: string;
+  noteId: string;
   path: number[]; // From root to here
   focusPath?: number[]; // From here to focus
 }>();
 
-const note = computed(() =>
-  props.noteId ? notes.notes.get(props.noteId) : undefined,
-);
+const note = computed(() => notes.notes.get(props.noteId));
 
 // Our children and their locally unique keys.
 const children = computed(() => {
@@ -35,11 +39,23 @@ const open = ref(false);
 
 const focused = computed(() => props.focusPath?.length === 0);
 
+const creating = ref(false);
+
 // We want to set open to true when we're on the focus path, but then it should
 // stay true. Hence a computed() combining open and forceOpen would not suffice.
 watchEffect(() => {
   open.value; // Ensure we stay open if `open.value = false` is attempted
   if (props.focusPath && props.focusPath.length > 0) open.value = true;
+});
+
+// Abort creating a child node whenever we stop being focused.
+watchEffect(() => {
+  if (!focused.value) creating.value = false;
+});
+
+// Ensure the creator component is visible.
+watchEffect(() => {
+  if (creating.value) open.value = true;
 });
 
 function focusPathFor(index: number): number[] | undefined {
@@ -79,7 +95,7 @@ function onClick() {
 </script>
 
 <template>
-  <div class="flex flex-col">
+  <div class="relative flex flex-col">
     <div
       class="flex flex-row gap-1 pl-1"
       :class="focused ? ['bg-neutral-200'] : ['hover:bg-neutral-100']"
@@ -112,6 +128,24 @@ function onClick() {
         :path="path.concat(index)"
         :focusPath="focusPathFor(index)"
       />
+    </div>
+
+    <div v-if="creating" class="pl-2">
+      <CNoteCreator
+        :parent-id="props.noteId"
+        @close="creating = false"
+        @finish="creating = false"
+      />
+    </div>
+
+    <!-- Controls -->
+    <div
+      v-if="focused"
+      class="absolute right-0.5 flex h-6 items-center gap-0.5"
+    >
+      <CNoteButton @click="creating = true">
+        <RiStickyNoteAddLine size="16px" />
+      </CNoteButton>
     </div>
   </div>
 </template>

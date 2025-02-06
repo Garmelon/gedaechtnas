@@ -10,7 +10,12 @@ const ui = useUiStore();
   <div class="flex h-screen touch-pan-x touch-pan-y flex-col">
     <CNavbar />
     <div class="h-full overflow-auto p-1">
-      <CNote :noteId="ui.anchor" :path="[]" :focusPath="ui.focusPath" />
+      <CNote
+        v-if="ui.anchor"
+        :noteId="ui.anchor"
+        :path="[]"
+        :focusPath="ui.focusPath"
+      />
     </div>
   </div>
 </template>
