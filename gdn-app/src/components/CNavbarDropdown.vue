@@ -73,7 +73,7 @@ function onSelectRepo(id: string) {
   <div
     v-if="open"
     ref="floating"
-    class="absolute left-0 top-0 w-fit min-w-48 overflow-auto rounded-md bg-neutral-800 font-light"
+    class="absolute left-0 top-0 z-10 w-fit min-w-48 overflow-auto rounded-md bg-neutral-800 font-light"
     style="scrollbar-gutter: stable"
     :style="floatingStyles"
   >
