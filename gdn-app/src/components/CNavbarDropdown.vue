@@ -65,7 +65,7 @@ function onSelectRepo(id: string) {
   <!-- Close dropdown when clicking outside it -->
   <div
     v-if="open"
-    class="fixed left-0 top-0 h-screen w-screen"
+    class="fixed left-0 top-0 z-10 h-screen w-screen"
     @click="open = false"
   ></div>
 
