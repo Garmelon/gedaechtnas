@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { RiAddLine, RiCheckLine, RiCloseLine } from "@remixicon/vue";
+import { RiCheckLine, RiCloseLine } from "@remixicon/vue";
 import { onMounted, ref, useTemplateRef } from "vue";
 import CNoteButton from "./CNoteButton.vue";
 
@@ -8,18 +8,18 @@ const emit = defineEmits<{
   (e: "finish", text: string): void;
 }>();
 
-const input = useTemplateRef<HTMLTextAreaElement>("input");
+const textarea = useTemplateRef<HTMLTextAreaElement>("textarea");
 const text = ref("");
 
 onMounted(() => {
-  input.value?.focus();
+  textarea.value?.focus();
   updateTextareaHeight();
 });
 
 function updateTextareaHeight() {
-  if (!input.value) return;
-  input.value.style.height = "0px";
-  input.value.style.height = `${input.value.scrollHeight}px`;
+  if (!textarea.value) return;
+  textarea.value.style.height = "0px";
+  textarea.value.style.height = `${textarea.value.scrollHeight}px`;
 }
 
 function onInput() {
@@ -42,17 +42,10 @@ function onKeyPress(ev: KeyboardEvent) {
 </script>
 
 <template>
-  <div class="flex flex-row items-start pl-1">
-    <!-- Fold/unfold symbol -->
-    <div class="flex h-6 items-center">
-      <div class="rounded">
-        <RiAddLine size="16px" />
-      </div>
-    </div>
-
+  <div class="flex items-start gap-0.5">
     <!-- Text -->
     <textarea
-      ref="input"
+      ref="textarea"
       v-model="text"
       class="z-1 flex-1 resize-none bg-neutral-100 px-1 outline-none"
       autofocus
@@ -60,13 +53,13 @@ function onKeyPress(ev: KeyboardEvent) {
       @keypress="onKeyPress"
     ></textarea>
 
-    <div class="ml-0.5 flex h-6 items-center">
+    <div class="flex h-6 items-center">
       <CNoteButton @click="emit('finish', text)">
         <RiCheckLine size="16px" />
       </CNoteButton>
     </div>
 
-    <div class="ml-0.5 flex h-6 items-center">
+    <div class="flex h-6 items-center">
       <CNoteButton @click="emit('close')">
         <RiCloseLine size="16px" />
       </CNoteButton>

@@ -3,13 +3,14 @@ import { useNotesStore } from "@/stores/notes";
 import { useUiStore } from "@/stores/ui";
 import { pathAppend } from "@/util";
 import {
+  RiAddLine,
   RiArrowDownSLine,
   RiArrowRightSLine,
   RiStickyNoteAddLine,
 } from "@remixicon/vue";
 import { computed, ref, watchEffect } from "vue";
 import CNoteButton from "./CNoteButton.vue";
-import CNoteCreator from "./CNoteCreator.vue";
+import CNoteEditor from "./CNoteEditor.vue";
 
 const notes = useNotesStore();
 const ui = useUiStore();
@@ -76,14 +77,14 @@ function onClick() {
   toggleOpen();
 }
 
-function onCreatorClose() {
+function onChildEditorClose() {
   creating.value = false;
 }
 
-function onCreatorFinish(text: string) {
+function onChildEditorFinish(text: string) {
   notes.appendNewChildNote(props.noteId, text);
   ui.focusPath = pathAppend(props.path, children.value.length - 1);
-  onCreatorClose();
+  onChildEditorClose();
 }
 </script>
 
@@ -128,11 +129,19 @@ function onCreatorFinish(text: string) {
       />
     </div>
 
-    <div v-if="creating" class="pl-2">
-      <CNoteCreator
-        :parent-id="props.noteId"
-        @close="onCreatorClose"
-        @finish="onCreatorFinish"
+    <!-- Child editor (for creating new children) -->
+    <div v-if="creating" class="flex items-start pl-3">
+      <!-- Fold/unfold symbol -->
+      <div class="flex h-6 items-center">
+        <div class="rounded">
+          <RiAddLine size="16px" />
+        </div>
+      </div>
+
+      <CNoteEditor
+        class="flex-1"
+        @close="onChildEditorClose"
+        @finish="onChildEditorFinish"
       />
     </div>
 
