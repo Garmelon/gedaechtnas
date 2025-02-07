@@ -28,12 +28,12 @@ const note = computed(() => notes.notes.get(props.noteId));
 const children = computed(() => {
   if (note.value === undefined) return [];
   const seen = new Map<string, number>();
-  const children: [string, string][] = [];
+  const children: { id: string; key: string }[] = [];
   for (const id of note.value.children) {
     const n = seen.get(id) || 0;
     seen.set(id, n + 1);
     const key = `${id}-${n}`;
-    children.push([id, key]);
+    children.push({ id, key });
   }
   return children;
 });
@@ -107,7 +107,10 @@ function onCreateEditorClose() {
 
 function onCreateEditorFinish(text: string) {
   notes.appendNewChildNote(props.noteId, text);
-  ui.focusPath = pathAppend(props.path, children.value.length - 1);
+
+  const lastChild = children.value.at(-1);
+  if (lastChild) ui.focusPath = pathAppend(props.path, lastChild.key);
+
   onCreateEditorClose();
 }
 </script>
@@ -163,10 +166,10 @@ function onCreateEditorFinish(text: string) {
     <!-- Children -->
     <div v-if="open && children.length > 0" class="flex flex-col pl-2">
       <CNote
-        v-for="([noteId, key], index) in children"
-        :key
-        :note-id
-        :path="pathAppend(path, index)"
+        v-for="child in children"
+        :key="child.key"
+        :noteId="child.id"
+        :path="pathAppend(path, child.key)"
       />
     </div>
 

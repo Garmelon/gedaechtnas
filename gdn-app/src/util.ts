@@ -1,14 +1,14 @@
-function pathString(path: number[]): string {
-  return path.join("/");
+function pathString(keys: string[]): string {
+  return keys.join("/");
 }
 
-function pathParse(path: string): number[] {
+function pathParse(path: string): string[] {
   if (path === "") return [];
-  return path.split("/").map((it) => Number.parseInt(it));
+  return path.split("/");
 }
 
-export function pathAppend(path: string, segment: number): string {
-  return pathString(pathParse(path).concat(segment));
+export function pathAppend(path: string, key: string): string {
+  return pathString(pathParse(path).concat(key));
 }
 
 export function pathAncestor(path: string): string {
