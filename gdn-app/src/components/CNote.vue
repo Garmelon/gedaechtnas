@@ -75,6 +75,15 @@ function onClick() {
 
   toggleOpen();
 }
+
+function onCreatorClose() {
+  creating.value = false;
+}
+
+function onCreatorFinish(text: string) {
+  notes.appendNewChildNote(props.noteId, text);
+  onCreatorClose();
+}
 </script>
 
 <template>
@@ -120,8 +129,8 @@ function onClick() {
     <div v-if="creating" class="pl-2">
       <CNoteCreator
         :parent-id="props.noteId"
-        @close="creating = false"
-        @finish="creating = false"
+        @close="onCreatorClose()"
+        @finish="(text) => onCreatorFinish(text)"
       />
     </div>
 
