@@ -9,7 +9,7 @@ const ui = useUiStore();
 <template>
   <div class="flex h-screen touch-pan-x touch-pan-y flex-col">
     <CNavbar />
-    <div class="h-full overflow-auto p-1">
+    <div class="h-full overflow-auto p-1 pr-5">
       <CNote
         v-if="ui.anchorId"
         :noteId="ui.anchorId"
