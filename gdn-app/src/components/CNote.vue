@@ -6,6 +6,7 @@ import {
   RiAddLine,
   RiArrowDownSLine,
   RiArrowRightSLine,
+  RiEditLine,
   RiStickyNoteAddLine,
 } from "@remixicon/vue";
 import { computed, ref, watchEffect } from "vue";
@@ -41,8 +42,10 @@ const mayOpen = computed(() => children.value.length > 0);
 const open = computed(() => mayOpen.value && ui.openPaths.has(props.path));
 
 const focused = computed(() => ui.focusPath === props.path);
-const hover = ref(false);
+const hover = computed(() => hovering.value && !editing.value);
 
+const hovering = ref(false);
+const editing = ref(false);
 const creating = ref(false);
 
 // Ensure we're open if we need to be.
@@ -80,18 +83,32 @@ function onClick() {
   toggleOpen();
 }
 
-function onCreateClick() {
+function onEditButtonClick() {
+  focusOnThis();
+  editing.value = true;
+}
+
+function onEditEditorClose() {
+  editing.value = false;
+}
+
+function onEditEditorFinish(text: string) {
+  if (note.value) note.value.text = text;
+  onEditEditorClose();
+}
+
+function onCreateButtonClick() {
   creating.value = true;
 }
 
-function onChildEditorClose() {
+function onCreateEditorClose() {
   creating.value = false;
 }
 
-function onChildEditorFinish(text: string) {
+function onCreateEditorFinish(text: string) {
   notes.appendNewChildNote(props.noteId, text);
   ui.focusPath = pathAppend(props.path, children.value.length - 1);
-  onChildEditorClose();
+  onCreateEditorClose();
 }
 </script>
 
@@ -100,8 +117,8 @@ function onChildEditorFinish(text: string) {
     <div
       class="relative flex min-h-6 pl-1"
       :class="focused ? 'bg-neutral-200' : hover ? 'bg-neutral-100' : ''"
-      @mouseenter="hover = true"
-      @mouseleave="hover = false"
+      @mouseenter="hovering = true"
+      @mouseleave="hovering = false"
       @click="onClick"
     >
       <!-- Fold/unfold symbol -->
@@ -119,7 +136,14 @@ function onChildEditorFinish(text: string) {
       </div>
 
       <!-- Text -->
-      <div v-if="note && note.text.trim().length > 0" class="whitespace-pre-wrap px-1">
+      <CNoteEditor
+        v-if="editing"
+        class="flex-1"
+        :initialText="note?.text"
+        @close="onEditEditorClose"
+        @finish="onEditEditorFinish"
+      />
+      <div v-else-if="note && note.text.trim().length > 0" class="whitespace-pre-wrap px-1">
         {{ note.text }}
       </div>
       <div v-else-if="note" class="px-1 font-light italic">empty</div>
@@ -127,7 +151,10 @@ function onChildEditorFinish(text: string) {
 
       <!-- Controls -->
       <div v-if="hover" class="absolute right-0 flex h-6 items-center gap-0.5">
-        <CNoteButton @click.stop="onCreateClick">
+        <CNoteButton @click.stop="onEditButtonClick">
+          <RiEditLine size="16px" />
+        </CNoteButton>
+        <CNoteButton @click.stop="onCreateButtonClick">
           <RiStickyNoteAddLine size="16px" />
         </CNoteButton>
       </div>
@@ -150,7 +177,7 @@ function onChildEditorFinish(text: string) {
         <RiAddLine size="16px" />
       </div>
 
-      <CNoteEditor class="flex-1" @close="onChildEditorClose" @finish="onChildEditorFinish" />
+      <CNoteEditor class="flex-1" @close="onCreateEditorClose" @finish="onCreateEditorFinish" />
     </div>
   </div>
 </template>

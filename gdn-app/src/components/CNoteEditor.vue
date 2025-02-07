@@ -3,13 +3,17 @@ import { RiCheckLine, RiCloseLine } from "@remixicon/vue";
 import { onMounted, ref, useTemplateRef } from "vue";
 import CNoteButton from "./CNoteButton.vue";
 
+const props = defineProps<{
+  initialText?: string;
+}>();
+
 const emit = defineEmits<{
   (e: "close"): void;
   (e: "finish", text: string): void;
 }>();
 
 const textarea = useTemplateRef<HTMLTextAreaElement>("textarea");
-const text = ref("");
+const text = ref(props.initialText || "");
 
 onMounted(() => {
   textarea.value?.focus();
@@ -48,16 +52,17 @@ function onKeyPress(ev: KeyboardEvent) {
       autofocus
       @input="onInput"
       @keypress="onKeyPress"
+      @click.stop
     ></textarea>
 
     <div class="flex h-6 items-center">
-      <CNoteButton @click="emit('finish', text)">
+      <CNoteButton @click.stop="emit('finish', text)">
         <RiCheckLine size="16px" />
       </CNoteButton>
     </div>
 
     <div class="flex h-6 items-center">
-      <CNoteButton @click="emit('close')">
+      <CNoteButton @click.stop="emit('close')">
         <RiCloseLine size="16px" />
       </CNoteButton>
     </div>
