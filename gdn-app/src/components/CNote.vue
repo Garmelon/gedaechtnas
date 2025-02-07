@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useNotesStore } from "@/stores/notes";
 import { useUiStore } from "@/stores/ui";
+import { pathAppend } from "@/util";
 import {
   RiArrowDownSLine,
   RiArrowRightSLine,
@@ -15,8 +16,8 @@ const ui = useUiStore();
 
 const props = defineProps<{
   noteId: string;
-  path: number[]; // From root to here
-  focusPath?: number[]; // From here to focus
+  path: string; // From root to here
+  forceOpen?: boolean;
 }>();
 
 const note = computed(() => notes.notes.get(props.noteId));
@@ -35,53 +36,34 @@ const children = computed(() => {
   return children;
 });
 
-const open = ref(false);
-
-const focused = computed(() => props.focusPath?.length === 0);
-
+const open = computed(() => ui.openPaths.has(props.path));
+const focused = computed(() => ui.focusPath === props.path);
 const creating = ref(false);
 
-// We want to set open to true when we're on the focus path, but then it should
-// stay true. Hence a computed() combining open and forceOpen would not suffice.
+// Ensure we're open if we need to be.
 watchEffect(() => {
-  open.value; // Ensure we stay open if `open.value = false` is attempted
-  if (props.focusPath && props.focusPath.length > 0) open.value = true;
+  if (props.forceOpen || creating.value) {
+    if (!ui.openPaths.has(props.path)) {
+      ui.openPaths.add(props.path);
+    }
+  }
 });
 
-// Abort creating a child node whenever we stop being focused.
+// Abort creating whenever we stop being focused.
 watchEffect(() => {
   if (!focused.value) creating.value = false;
 });
 
-// Ensure the creator component is visible.
-watchEffect(() => {
-  if (creating.value) open.value = true;
-});
-
-function focusPathFor(index: number): number[] | undefined {
-  if (!props.focusPath) return undefined;
-  if (index !== props.focusPath[0]) return undefined;
-  return props.focusPath.slice(1);
-}
-
 function focusOnThis() {
-  ui.focusPath = props.path.slice();
+  ui.focusPath = props.path;
 }
 
 function toggleOpen() {
-  if (props.focusPath) {
-    // We're on the focus path, so the situation is one of these cases:
-    //
-    // 1. We're closed and focused, in which case this does nothing.
-    // 2. We're open and focused, in which case this does nothing.
-    // 3. We're open and on the focus path, in which case closing will hide the
-    //    actual focus and we should be focused instead.
-    //
-    // In any case, we can just...
-    focusOnThis();
+  if (open.value) {
+    ui.openPaths.delete(props.path);
+  } else {
+    ui.openPaths.add(props.path);
   }
-
-  open.value = !open.value;
 }
 
 function onClick() {
@@ -125,8 +107,7 @@ function onClick() {
         v-for="([noteId, key], index) in children"
         :key
         :note-id
-        :path="path.concat(index)"
-        :focusPath="focusPathFor(index)"
+        :path="pathAppend(path, index)"
       />
     </div>
 

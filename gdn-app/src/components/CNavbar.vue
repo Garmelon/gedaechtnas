@@ -1,10 +1,10 @@
 <script setup lang="ts">
+import { Note, useNotesStore } from "@/stores/notes";
 import { useReposStore } from "@/stores/repos";
+import { useUiStore } from "@/stores/ui";
 import { RiDeleteBinFill, RiNodeTree, RiSettings3Fill } from "@remixicon/vue";
 import CNavbarButton from "./CNavbarButton.vue";
 import CNavbarDropdown from "./CNavbarDropdown.vue";
-import { useUiStore } from "@/stores/ui";
-import { Note, useNotesStore } from "@/stores/notes";
 
 const repos = useReposStore();
 const notes = useNotesStore();
@@ -29,7 +29,7 @@ function createSomeNotes() {
 
   const root = mkNote("root", n1.id, n2.id, n3.id, n4.id, n5.id, n2.id);
 
-  ui.anchor = root.id;
+  ui.anchorId = root.id;
 
   // Shuffle children of root
   root.children = root.children

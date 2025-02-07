@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { RiAddLine, RiCheckLine, RiCloseLine } from "@remixicon/vue";
-import CNoteButton from "./CNoteButton.vue";
 import { onMounted, ref, useTemplateRef } from "vue";
+import CNoteButton from "./CNoteButton.vue";
 
 const emit = defineEmits<{
   (e: "close"): void;

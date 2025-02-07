@@ -11,10 +11,10 @@ const ui = useUiStore();
     <CNavbar />
     <div class="h-full overflow-auto p-1">
       <CNote
-        v-if="ui.anchor"
-        :noteId="ui.anchor"
-        :path="[]"
-        :focusPath="ui.focusPath"
+        v-if="ui.anchorId"
+        :noteId="ui.anchorId"
+        :path="''"
+        :forceOpen="true"
       />
     </div>
   </div>
