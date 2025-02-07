@@ -114,7 +114,12 @@ function onChildEditorFinish(text: string) {
       </div>
 
       <!-- Text -->
-      <div v-if="note && note.text.trim().length > 0">{{ note.text }}</div>
+      <div
+        v-if="note && note.text.trim().length > 0"
+        class="whitespace-pre-wrap"
+      >
+        {{ note.text }}
+      </div>
       <div v-else-if="note" class="font-light italic">empty</div>
       <div v-else class="font-light italic">note not found</div>
     </div>
