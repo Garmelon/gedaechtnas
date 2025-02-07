@@ -90,7 +90,7 @@ function onCreatorFinish(text: string) {
 <template>
   <div class="relative flex flex-col">
     <div
-      class="flex flex-row gap-1 pl-1"
+      class="flex min-h-6 flex-row gap-1 pl-1"
       :class="focused ? ['bg-neutral-200'] : ['hover:bg-neutral-100']"
       @click="onClick"
     >
@@ -113,7 +113,8 @@ function onCreatorFinish(text: string) {
       </div>
 
       <!-- Text -->
-      <div v-if="note">{{ note.text }}</div>
+      <div v-if="note && note.text.trim().length > 0">{{ note.text }}</div>
+      <div v-else-if="note" class="font-light italic">empty</div>
       <div v-else class="font-light italic">note not found</div>
     </div>
 
