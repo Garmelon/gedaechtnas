@@ -173,13 +173,11 @@ function onCreateEditorFinish(text: string) {
       />
     </div>
 
-    <!-- Child editor (for creating new children) -->
+    <!-- Editor for creating new children -->
     <div v-if="creating" class="flex items-start pl-3">
-      <!-- Fold/unfold symbol -->
       <div class="flex h-6 items-center">
         <RiAddLine size="16px" />
       </div>
-
       <CNoteEditor class="flex-1" @close="onCreateEditorClose" @finish="onCreateEditorFinish" />
     </div>
   </div>
