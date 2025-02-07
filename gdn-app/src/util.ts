@@ -11,6 +11,10 @@ export function pathAppend(path: string, segment: number): string {
   return pathString(pathParse(path).concat(segment));
 }
 
+export function pathAncestor(path: string): string {
+  return pathString(pathParse(path).slice(0, -1));
+}
+
 export function pathAncestors(path: string): string[] {
   const parsedPath = pathParse(path);
   const result = [];

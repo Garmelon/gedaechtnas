@@ -2,8 +2,18 @@
 import CNavbar from "./components/CNavbar.vue";
 import CNote from "./components/CNote.vue";
 import { useUiStore } from "./stores/ui";
+import { pathAncestor } from "./util";
 
 const ui = useUiStore();
+
+window.addEventListener("keypress", (ev) => {
+  if (document.activeElement !== document.body) return;
+
+  if (ev.key === "Escape") {
+    ui.focusPath = pathAncestor(ui.focusPath);
+    return;
+  }
+});
 </script>
 
 <template>
