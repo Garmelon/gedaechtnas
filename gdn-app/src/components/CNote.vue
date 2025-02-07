@@ -39,7 +39,10 @@ const children = computed(() => {
 
 const mayOpen = computed(() => children.value.length > 0);
 const open = computed(() => mayOpen.value && ui.openPaths.has(props.path));
+
 const focused = computed(() => ui.focusPath === props.path);
+const hover = ref(false);
+
 const creating = ref(false);
 
 // Ensure we're open if we need to be.
@@ -77,6 +80,10 @@ function onClick() {
   toggleOpen();
 }
 
+function onCreateClick() {
+  creating.value = true;
+}
+
 function onChildEditorClose() {
   creating.value = false;
 }
@@ -89,17 +96,19 @@ function onChildEditorFinish(text: string) {
 </script>
 
 <template>
-  <div class="relative flex flex-col">
+  <div class="flex flex-col">
     <div
-      class="flex min-h-6 pl-1"
-      :class="focused ? ['bg-neutral-200'] : ['hover:bg-neutral-100']"
+      class="relative flex min-h-6 pl-1"
+      :class="focused ? 'bg-neutral-200' : hover ? 'bg-neutral-100' : ''"
+      @mouseenter="hover = true"
+      @mouseleave="hover = false"
       @click="onClick"
     >
       <!-- Fold/unfold symbol -->
       <div class="flex h-6 items-center">
         <div
           class="rounded"
-          :class="focused ? ['hover:bg-neutral-300'] : ['hover:bg-neutral-200']"
+          :class="focused ? 'hover:bg-neutral-300' : 'hover:bg-neutral-200'"
           @click.stop="toggleOpen()"
         >
           <RiArrowDownSLine v-if="open && props.forceOpen" size="16px" class="text-neutral-400" />
@@ -115,6 +124,13 @@ function onChildEditorFinish(text: string) {
       </div>
       <div v-else-if="note" class="px-1 font-light italic">empty</div>
       <div v-else class="px-1 font-light italic">note not found</div>
+
+      <!-- Controls -->
+      <div v-if="hover" class="absolute right-0 flex h-6 items-center gap-0.5">
+        <CNoteButton @click.stop="onCreateClick">
+          <RiStickyNoteAddLine size="16px" />
+        </CNoteButton>
+      </div>
     </div>
 
     <!-- Children -->
@@ -135,13 +151,6 @@ function onChildEditorFinish(text: string) {
       </div>
 
       <CNoteEditor class="flex-1" @close="onChildEditorClose" @finish="onChildEditorFinish" />
-    </div>
-
-    <!-- Controls -->
-    <div v-if="focused" class="absolute right-0 flex h-6 items-center gap-0.5">
-      <CNoteButton @click="creating = true">
-        <RiStickyNoteAddLine size="16px" />
-      </CNoteButton>
     </div>
   </div>
 </template>
