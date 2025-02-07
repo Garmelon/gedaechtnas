@@ -8,36 +8,49 @@ const emit = defineEmits<{
   (e: "finish", text: string): void;
 }>();
 
-const input = useTemplateRef<HTMLInputElement>("input");
+const input = useTemplateRef<HTMLTextAreaElement>("input");
 const text = ref("");
 
-onMounted(() => input.value?.focus());
+onMounted(() => {
+  input.value?.focus();
+  updateTextareaHeight();
+});
+
+function updateTextareaHeight() {
+  if (!input.value) return;
+  input.value.style.height = "0px";
+  input.value.style.height = `${input.value.scrollHeight}px`;
+}
 </script>
 
 <template>
-  <div class="flex flex-row items-center gap-1 pl-1 pr-0.5">
+  <div class="flex flex-row items-start pl-1">
     <!-- Fold/unfold symbol -->
-    <div class="flex items-center">
+    <div class="flex h-6 items-center">
       <div class="rounded">
         <RiAddLine size="16px" />
       </div>
     </div>
 
     <!-- Text -->
-    <input
+    <textarea
       ref="input"
       v-model="text"
-      type="text"
-      class="z-1 flex-1 bg-neutral-100"
+      class="z-1 flex-1 resize-none bg-neutral-100 px-1 outline-none"
       autofocus
-    />
+      @input="updateTextareaHeight()"
+    ></textarea>
 
-    <CNoteButton @click="emit('finish', text)">
-      <RiCheckLine size="16px" />
-    </CNoteButton>
+    <div class="ml-0.5 flex h-6 items-center">
+      <CNoteButton @click="emit('finish', text)">
+        <RiCheckLine size="16px" />
+      </CNoteButton>
+    </div>
 
-    <CNoteButton @click="emit('close')">
-      <RiCloseLine size="16px" />
-    </CNoteButton>
+    <div class="ml-0.5 flex h-6 items-center">
+      <CNoteButton @click="emit('close')">
+        <RiCloseLine size="16px" />
+      </CNoteButton>
+    </div>
   </div>
 </template>

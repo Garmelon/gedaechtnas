@@ -126,10 +126,7 @@ function onClick() {
     </div>
 
     <!-- Controls -->
-    <div
-      v-if="focused"
-      class="absolute right-0.5 flex h-6 items-center gap-0.5"
-    >
+    <div v-if="focused" class="absolute right-0 flex h-6 items-center gap-0.5">
       <CNoteButton @click="creating = true">
         <RiStickyNoteAddLine size="16px" />
       </CNoteButton>
