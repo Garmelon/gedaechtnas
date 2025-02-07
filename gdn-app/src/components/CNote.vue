@@ -91,12 +91,12 @@ function onChildEditorFinish(text: string) {
 <template>
   <div class="relative flex flex-col">
     <div
-      class="flex min-h-6 flex-row gap-1 pl-1"
+      class="flex min-h-6 pl-1"
       :class="focused ? ['bg-neutral-200'] : ['hover:bg-neutral-100']"
       @click="onClick"
     >
       <!-- Fold/unfold symbol -->
-      <div class="flex items-center">
+      <div class="flex h-6 items-center">
         <div
           class="rounded"
           :class="focused ? ['hover:bg-neutral-300'] : ['hover:bg-neutral-200']"
@@ -110,11 +110,11 @@ function onChildEditorFinish(text: string) {
       </div>
 
       <!-- Text -->
-      <div v-if="note && note.text.trim().length > 0" class="whitespace-pre-wrap">
+      <div v-if="note && note.text.trim().length > 0" class="whitespace-pre-wrap px-1">
         {{ note.text }}
       </div>
-      <div v-else-if="note" class="font-light italic">empty</div>
-      <div v-else class="font-light italic">note not found</div>
+      <div v-else-if="note" class="px-1 font-light italic">empty</div>
+      <div v-else class="px-1 font-light italic">note not found</div>
     </div>
 
     <!-- Children -->
@@ -131,9 +131,7 @@ function onChildEditorFinish(text: string) {
     <div v-if="creating" class="flex items-start pl-3">
       <!-- Fold/unfold symbol -->
       <div class="flex h-6 items-center">
-        <div class="rounded">
-          <RiAddLine size="16px" />
-        </div>
+        <RiAddLine size="16px" />
       </div>
 
       <CNoteEditor class="flex-1" @close="onChildEditorClose" @finish="onChildEditorFinish" />
