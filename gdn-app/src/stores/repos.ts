@@ -21,9 +21,7 @@ export const useReposStore = defineStore("repos", () => {
     return values;
   });
 
-  const repoIdsByName = computed<string[]>(() =>
-    reposByName.value.map((it) => it.id),
-  );
+  const repoIdsByName = computed<string[]>(() => reposByName.value.map((it) => it.id));
 
   function addRepo(repo: Repo) {
     repos.value.set(repo.id, repo);

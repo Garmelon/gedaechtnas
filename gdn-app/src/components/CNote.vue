@@ -102,11 +102,7 @@ function onChildEditorFinish(text: string) {
           :class="focused ? ['hover:bg-neutral-300'] : ['hover:bg-neutral-200']"
           @click.stop="toggleOpen()"
         >
-          <RiArrowDownSLine
-            v-if="open && props.forceOpen"
-            size="16px"
-            class="text-neutral-400"
-          />
+          <RiArrowDownSLine v-if="open && props.forceOpen" size="16px" class="text-neutral-400" />
           <RiArrowDownSLine v-else-if="open" size="16px" />
           <RiArrowRightSLine v-else-if="mayOpen" size="16px" />
           <RiArrowRightSLine v-else size="16px" class="text-neutral-400" />
@@ -114,10 +110,7 @@ function onChildEditorFinish(text: string) {
       </div>
 
       <!-- Text -->
-      <div
-        v-if="note && note.text.trim().length > 0"
-        class="whitespace-pre-wrap"
-      >
+      <div v-if="note && note.text.trim().length > 0" class="whitespace-pre-wrap">
         {{ note.text }}
       </div>
       <div v-else-if="note" class="font-light italic">empty</div>
@@ -143,11 +136,7 @@ function onChildEditorFinish(text: string) {
         </div>
       </div>
 
-      <CNoteEditor
-        class="flex-1"
-        @close="onChildEditorClose"
-        @finish="onChildEditorFinish"
-      />
+      <CNoteEditor class="flex-1" @close="onChildEditorClose" @finish="onChildEditorFinish" />
     </div>
 
     <!-- Controls -->

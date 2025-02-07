@@ -1,11 +1,7 @@
 <script setup lang="ts">
 import { useReposStore } from "@/stores/repos";
 import { autoUpdate, offset, size, useFloating } from "@floating-ui/vue";
-import {
-  RiAddLine,
-  RiArrowDropDownLine,
-  RiArrowDropUpLine,
-} from "@remixicon/vue";
+import { RiAddLine, RiArrowDropDownLine, RiArrowDropUpLine } from "@remixicon/vue";
 import { ref, useTemplateRef } from "vue";
 import CNavbarDropdownEntry from "./CNavbarDropdownEntry.vue";
 
@@ -52,9 +48,7 @@ function onSelectRepo(id: string) {
     <span v-if="repos.selectedRepo" class="overflow-hidden overflow-ellipsis">
       {{ repos.selectedRepo.name }}
     </span>
-    <span v-else class="overflow-hidden overflow-ellipsis italic">
-      no repo selected
-    </span>
+    <span v-else class="overflow-hidden overflow-ellipsis italic"> no repo selected </span>
 
     <div class="text-neutral-400">
       <RiArrowDropUpLine v-if="open" class="inline" />
@@ -63,11 +57,7 @@ function onSelectRepo(id: string) {
   </div>
 
   <!-- Close dropdown when clicking outside it -->
-  <div
-    v-if="open"
-    class="fixed left-0 top-0 z-10 h-screen w-screen"
-    @click="open = false"
-  ></div>
+  <div v-if="open" class="fixed left-0 top-0 z-10 h-screen w-screen" @click="open = false"></div>
 
   <!-- Dropdown -->
   <div

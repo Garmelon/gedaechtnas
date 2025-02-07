@@ -23,10 +23,7 @@ export const useNotesStore = defineStore("notes", () => {
     });
   }
 
-  function appendNewChildNote(
-    parentId: string,
-    text: string,
-  ): Note | undefined {
+  function appendNewChildNote(parentId: string, text: string): Note | undefined {
     const parent = notes.value.get(parentId);
     if (parent === undefined) return undefined;
     const note = addNewNote(text);

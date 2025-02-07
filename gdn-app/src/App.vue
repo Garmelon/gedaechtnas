@@ -20,12 +20,7 @@ window.addEventListener("keypress", (ev) => {
   <div class="flex h-screen touch-pan-x touch-pan-y flex-col">
     <CNavbar />
     <div class="h-full overflow-auto p-1 pr-5">
-      <CNote
-        v-if="ui.anchorId"
-        :noteId="ui.anchorId"
-        :path="''"
-        :forceOpen="true"
-      />
+      <CNote v-if="ui.anchorId" :noteId="ui.anchorId" :path="''" :forceOpen="true" />
     </div>
   </div>
 </template>
