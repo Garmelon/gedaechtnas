@@ -21,6 +21,24 @@ function updateTextareaHeight() {
   input.value.style.height = "0px";
   input.value.style.height = `${input.value.scrollHeight}px`;
 }
+
+function onInput() {
+  updateTextareaHeight();
+}
+
+function onKeyPress(ev: KeyboardEvent) {
+  if (ev.key === "Escape") {
+    emit("close");
+    ev.preventDefault();
+    return;
+  }
+
+  if (ev.key === "Enter" && !ev.shiftKey) {
+    emit("finish", text.value);
+    ev.preventDefault();
+    return;
+  }
+}
 </script>
 
 <template>
@@ -38,7 +56,8 @@ function updateTextareaHeight() {
       v-model="text"
       class="z-1 flex-1 resize-none bg-neutral-100 px-1 outline-none"
       autofocus
-      @input="updateTextareaHeight()"
+      @input="onInput"
+      @keypress="onKeyPress"
     ></textarea>
 
     <div class="ml-0.5 flex h-6 items-center">
