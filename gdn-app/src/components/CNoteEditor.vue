@@ -29,15 +29,12 @@ function onInput() {
 function onKeyPress(ev: KeyboardEvent) {
   if (ev.key === "Escape") {
     emit("close");
-    ev.preventDefault();
-    return;
-  }
-
-  if (ev.key === "Enter" && !ev.shiftKey) {
+  } else if (ev.key === "Enter" && !ev.shiftKey) {
     emit("finish", text.value);
-    ev.preventDefault();
-    return;
-  }
+  } else return;
+
+  ev.preventDefault();
+  ev.stopPropagation();
 }
 </script>
 
