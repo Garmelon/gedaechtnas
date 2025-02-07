@@ -36,7 +36,8 @@ const children = computed(() => {
   return children;
 });
 
-const open = computed(() => ui.openPaths.has(props.path));
+const mayOpen = computed(() => children.value.length > 0);
+const open = computed(() => mayOpen.value && ui.openPaths.has(props.path));
 const focused = computed(() => ui.focusPath === props.path);
 const creating = ref(false);
 
@@ -90,8 +91,13 @@ function onClick() {
           :class="focused ? ['hover:bg-neutral-300'] : ['hover:bg-neutral-200']"
           @click.stop="toggleOpen()"
         >
-          <RiArrowRightSLine v-if="children.length > 0 && !open" size="16px" />
-          <RiArrowDownSLine v-else-if="children.length > 0" size="16px" />
+          <RiArrowDownSLine
+            v-if="open && props.forceOpen"
+            size="16px"
+            class="text-neutral-400"
+          />
+          <RiArrowDownSLine v-else-if="open" size="16px" />
+          <RiArrowRightSLine v-else-if="mayOpen" size="16px" />
           <RiArrowRightSLine v-else size="16px" class="text-neutral-400" />
         </div>
       </div>
