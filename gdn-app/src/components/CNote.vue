@@ -82,6 +82,7 @@ function onCreatorClose() {
 
 function onCreatorFinish(text: string) {
   notes.appendNewChildNote(props.noteId, text);
+  ui.focusPath = pathAppend(props.path, children.value.length - 1);
   onCreatorClose();
 }
 </script>
@@ -129,8 +130,8 @@ function onCreatorFinish(text: string) {
     <div v-if="creating" class="pl-2">
       <CNoteCreator
         :parent-id="props.noteId"
-        @close="onCreatorClose()"
-        @finish="(text) => onCreatorFinish(text)"
+        @close="onCreatorClose"
+        @finish="onCreatorFinish"
       />
     </div>
 
