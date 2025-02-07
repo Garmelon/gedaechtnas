@@ -38,15 +38,17 @@ const children = computed(() => {
   return children;
 });
 
+const hovering = ref(false);
+const mode = ref<"editing" | "creating">();
+
 const mayOpen = computed(() => children.value.length > 0);
 const open = computed(() => mayOpen.value && ui.openPaths.has(props.path));
 
 const focused = computed(() => ui.focusPath === props.path);
-const hover = computed(() => hovering.value && !editing.value);
+const hover = computed(() => hovering.value && mode.value !== "editing");
 
-const hovering = ref(false);
-const editing = ref(false);
-const creating = ref(false);
+const creating = computed(() => mode.value === "creating");
+const editing = computed(() => mode.value === "editing");
 
 // Ensure we're open if we need to be.
 watchEffect(() => {
@@ -57,9 +59,14 @@ watchEffect(() => {
   }
 });
 
-// Abort creating whenever we stop being focused.
+// Ensure only one editor is ever open.
 watchEffect(() => {
-  if (!focused.value) creating.value = false;
+  if (!focused.value) mode.value = undefined;
+});
+
+// Ensure we're focused when an editor is open.
+watchEffect(() => {
+  if (mode.value) focusOnThis();
 });
 
 function focusOnThis() {
@@ -84,12 +91,11 @@ function onClick() {
 }
 
 function onEditButtonClick() {
-  focusOnThis();
-  editing.value = true;
+  mode.value = "editing";
 }
 
 function onEditEditorClose() {
-  editing.value = false;
+  mode.value = undefined;
 }
 
 function onEditEditorFinish(text: string) {
@@ -98,11 +104,11 @@ function onEditEditorFinish(text: string) {
 }
 
 function onCreateButtonClick() {
-  creating.value = true;
+  mode.value = "creating";
 }
 
 function onCreateEditorClose() {
-  creating.value = false;
+  mode.value = undefined;
 }
 
 function onCreateEditorFinish(text: string) {
