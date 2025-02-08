@@ -1,6 +1,6 @@
 import { pathAncestors, pathLiesOn } from "@/util";
 import { defineStore } from "pinia";
-import { ref, watch, watchEffect } from "vue";
+import { ref, watchEffect } from "vue";
 
 export const useUiStore = defineStore("ui", () => {
   const anchorId = ref<string>();
@@ -15,18 +15,31 @@ export const useUiStore = defineStore("ui", () => {
     }
   });
 
-  // Ensure the focusPath is updated when a node that lies on it is folded.
-  watch(openPaths, (now, old) => {
-    for (const folded of old.difference(now)) {
-      if (pathLiesOn(folded, focusPath.value)) {
-        focusPath.value = folded;
-      }
+  function isOpen(path: string): boolean {
+    return openPaths.value.has(path);
+  }
+
+  function setOpen(path: string, open: boolean) {
+    // Move the focusPath if necessary
+    if (!open && isOpen(path) && pathLiesOn(path, focusPath.value)) {
+      focusPath.value = path;
     }
-  });
+
+    // Don't update openPaths unnecessarily.
+    // Just in case vue itself doesn't debounce Set operations.
+    if (open && !isOpen(path)) openPaths.value.add(path);
+    else if (!open && isOpen(path)) openPaths.value.delete(path);
+  }
+
+  function toggleOpen(path: string) {
+    setOpen(path, !isOpen(path));
+  }
 
   return {
     anchorId,
     focusPath,
-    openPaths,
+    isOpen,
+    setOpen,
+    toggleOpen,
   };
 });

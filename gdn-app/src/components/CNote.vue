@@ -42,7 +42,7 @@ const hovering = ref(false);
 const mode = ref<"editing" | "creating">();
 
 const mayOpen = computed(() => children.value.length > 0);
-const open = computed(() => mayOpen.value && ui.openPaths.has(props.path));
+const open = computed(() => mayOpen.value && ui.isOpen(props.path));
 
 const focused = computed(() => ui.focusPath === props.path);
 const hover = computed(() => hovering.value && mode.value !== "editing");
@@ -52,11 +52,7 @@ const editing = computed(() => mode.value === "editing");
 
 // Ensure we're open if we need to be.
 watchEffect(() => {
-  if (props.forceOpen || creating.value) {
-    if (!ui.openPaths.has(props.path)) {
-      ui.openPaths.add(props.path);
-    }
-  }
+  if (props.forceOpen || creating.value) ui.setOpen(props.path, true);
 });
 
 // Ensure only one editor is ever open.
@@ -73,21 +69,13 @@ function focusOnThis() {
   ui.focusPath = props.path;
 }
 
-function toggleOpen() {
-  if (open.value) {
-    ui.openPaths.delete(props.path);
-  } else {
-    ui.openPaths.add(props.path);
-  }
-}
-
 function onClick() {
   if (!focused.value) {
     focusOnThis();
     return;
   }
 
-  toggleOpen();
+  ui.toggleOpen(props.path);
 }
 
 function onEditButtonClick() {
@@ -135,7 +123,7 @@ function onCreateEditorFinish(text: string) {
         <div
           class="rounded"
           :class="focused ? 'hover:bg-neutral-300' : 'hover:bg-neutral-200'"
-          @click.stop="toggleOpen()"
+          @click.stop="ui.toggleOpen(props.path)"
         >
           <RiArrowDownSLine v-if="open && props.forceOpen" size="16px" class="text-neutral-400" />
           <RiArrowDownSLine v-else-if="open" size="16px" />
