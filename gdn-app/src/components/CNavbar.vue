@@ -3,6 +3,7 @@ import { Note, useNotesStore } from "@/stores/notes";
 import { useReposStore } from "@/stores/repos";
 import { useUiStore } from "@/stores/ui";
 import { RiDeleteBinFill, RiNodeTree, RiSettings3Fill } from "@remixicon/vue";
+import { onMounted } from "vue";
 import CNavbarButton from "./CNavbarButton.vue";
 import CNavbarDropdown from "./CNavbarDropdown.vue";
 
@@ -37,6 +38,8 @@ function createSomeNotes() {
     .sort((a, b) => a.rand - b.rand)
     .map(({ it }) => it);
 }
+
+onMounted(() => createSomeNotes());
 </script>
 
 <template>
