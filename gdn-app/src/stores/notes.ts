@@ -1,8 +1,8 @@
 import { defineStore } from "pinia";
-import { ref } from "vue";
+import { computed, ref } from "vue";
 
 export type Note = {
-  id: string;
+  readonly id: string;
   text: string;
   children: string[];
 };
@@ -10,8 +10,24 @@ export type Note = {
 export const useNotesStore = defineStore("notes", () => {
   const notes = ref<Map<string, Note>>(new Map());
 
+  const parents = computed(() => {
+    const result = new Map<string, Set<string>>();
+    for (const note of notes.value.values()) {
+      for (const childId of note.children) {
+        const parents = result.get(childId) || new Set();
+        result.set(childId, parents);
+        parents.add(note.id);
+      }
+    }
+    return result;
+  });
+
   function getNote(id: string): Note | undefined {
     return notes.value.get(id);
+  }
+
+  function getParents(id: string): ReadonlySet<string> {
+    return parents.value.get(id) || new Set();
   }
 
   function createNote(text: string): Note {
@@ -26,6 +42,7 @@ export const useNotesStore = defineStore("notes", () => {
 
   return {
     getNote,
+    getParents,
     createNote,
     clearNotes,
   };

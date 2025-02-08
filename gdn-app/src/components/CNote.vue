@@ -6,6 +6,7 @@ import {
   RiAddLine,
   RiArrowDownSLine,
   RiArrowRightSLine,
+  RiCornerUpRightLine,
   RiEditLine,
   RiStickyNoteAddLine,
 } from "@remixicon/vue";
@@ -18,11 +19,18 @@ const ui = useUiStore();
 
 const props = defineProps<{
   noteId: string;
+  parentId?: string;
   path: string; // From root to here
   forceOpen?: boolean;
 }>();
 
 const note = computed(() => notes.getNote(props.noteId));
+
+const parents = computed(() => {
+  let parents = notes.getParents(props.noteId);
+  if (props.parentId) parents = parents.difference(new Set([props.parentId]));
+  return [...parents].sort().map((id) => ({ id, text: notes.getNote(id)?.text }));
+});
 
 // Our children and their locally unique keys.
 const children = computed(() => {
@@ -117,6 +125,13 @@ function onCreateEditorFinish(text: string) {
 
 <template>
   <div class="flex flex-col">
+    <!-- Parents -->
+    <div v-if="parents.length > 0" class="pt-1">
+      <div v-for="parent of parents" class="pl-6 text-xs text-neutral-400">
+        <RiCornerUpRightLine size="12px" class="inline" /> {{ parent.text }}
+      </div>
+    </div>
+
     <div
       class="relative flex min-h-6 pl-1"
       :class="focused ? 'bg-neutral-200' : hover ? 'bg-neutral-100' : ''"
@@ -166,9 +181,10 @@ function onCreateEditorFinish(text: string) {
     <!-- Children -->
     <div v-if="open && children.length > 0" class="flex flex-col pl-2">
       <CNote
-        v-for="child in children"
+        v-for="child of children"
         :key="child.key"
         :noteId="child.id"
+        :parentId="props.noteId"
         :path="pathAppend(path, child.key)"
       />
     </div>

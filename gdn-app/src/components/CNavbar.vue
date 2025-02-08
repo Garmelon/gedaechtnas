@@ -26,7 +26,7 @@ function createSomeNotes() {
 
   const n1 = mkNote("n1");
   const n2 = mkNote("n2", n2n1.id, n2n2.id, n2n3.id);
-  const n3 = mkNote("n3");
+  const n3 = mkNote("n3", n2n1.id);
   const n4 = mkNote("n4");
   const n5 = mkNote("n5", "NaN (not a note)");
 
