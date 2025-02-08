@@ -11,8 +11,10 @@ const repos = useReposStore();
 const notes = useNotesStore();
 const ui = useUiStore();
 
-function mkNote(id: string, ...children: string[]): Note {
-  return notes.addNote({ id, text: id, children });
+function mkNote(text: string, ...children: string[]): Note {
+  const note = notes.createNote(text);
+  children.forEach((it) => note.children.push(it));
+  return note;
 }
 
 function createSomeNotes() {

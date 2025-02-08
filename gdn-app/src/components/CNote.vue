@@ -22,11 +22,11 @@ const props = defineProps<{
   forceOpen?: boolean;
 }>();
 
-const note = computed(() => notes.notes.get(props.noteId));
+const note = computed(() => notes.getNote(props.noteId));
 
 // Our children and their locally unique keys.
 const children = computed(() => {
-  if (note.value === undefined) return [];
+  if (!note.value) return [];
   const seen = new Map<string, number>();
   const children: { id: string; key: string }[] = [];
   for (const id of note.value.children) {
@@ -79,6 +79,7 @@ function onClick() {
 }
 
 function onEditButtonClick() {
+  if (!note.value) return;
   mode.value = "editing";
 }
 
@@ -87,11 +88,13 @@ function onEditEditorClose() {
 }
 
 function onEditEditorFinish(text: string) {
-  if (note.value) note.value.text = text;
+  if (!note.value) return;
+  note.value.text = text;
   onEditEditorClose();
 }
 
 function onCreateButtonClick() {
+  if (!note.value) return;
   mode.value = "creating";
 }
 
@@ -100,7 +103,10 @@ function onCreateEditorClose() {
 }
 
 function onCreateEditorFinish(text: string) {
-  notes.appendNewChildNote(props.noteId, text);
+  if (!note.value) return;
+
+  const newNote = notes.createNote(text);
+  note.value.children.push(newNote.id);
 
   const lastChild = children.value.at(-1);
   if (lastChild) ui.focusPath = pathAppend(props.path, lastChild.key);
