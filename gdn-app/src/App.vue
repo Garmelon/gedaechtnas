@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import CNavbar from "./components/CNavbar.vue";
 import CNote from "./components/CNote.vue";
+import { Path, Segment } from "./lib/path";
 import { useUiStore } from "./stores/ui";
-import { pathAncestor } from "./util";
 
 const ui = useUiStore();
 
@@ -10,7 +10,8 @@ window.addEventListener("keypress", (ev) => {
   if (document.activeElement !== document.body) return;
 
   if (ev.key === "Escape") {
-    ui.focusPath = pathAncestor(ui.focusPath);
+    const parent = ui.focusPath.parent();
+    if (parent) ui.focusPath = parent;
     return;
   }
 });
@@ -20,7 +21,12 @@ window.addEventListener("keypress", (ev) => {
   <div class="flex h-screen touch-pan-x touch-pan-y flex-col">
     <CNavbar />
     <div class="h-full overflow-auto p-1 pr-5">
-      <CNote v-if="ui.anchorId" :noteId="ui.anchorId" :path="''" :forceOpen="true" />
+      <CNote
+        v-if="ui.anchorId"
+        :path="new Path()"
+        :segment="new Segment(ui.anchorId, 0)"
+        :forceOpen="true"
+      />
     </div>
   </div>
 </template>

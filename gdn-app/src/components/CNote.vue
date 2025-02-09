@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import { Path, Segment } from "@/lib/path";
 import { useNotesStore } from "@/stores/notes";
 import { useUiStore } from "@/stores/ui";
-import { pathAppend, pathSlice } from "@/util";
 import {
   RiAddLine,
   RiArrowDownSLine,
@@ -20,30 +20,30 @@ const notes = useNotesStore();
 const ui = useUiStore();
 
 const props = defineProps<{
-  noteId: string;
+  path: Path; // From root to here
+  segment: Segment;
   parentId?: string;
-  path: string; // From root to here
   forceOpen?: boolean;
 }>();
 
-const note = computed(() => notes.getNote(props.noteId));
+const id = computed(() => props.segment.id);
+const note = computed(() => notes.getNote(id.value));
 
 const parents = computed(() => {
-  let parents = notes.getParents(props.noteId);
+  let parents = notes.getParents(id.value);
   if (props.parentId) parents = parents.difference(new Set([props.parentId]));
   return [...parents].sort().map((id) => ({ id, text: notes.getNote(id)?.text }));
 });
 
-// Our children and their locally unique keys.
+// Our children and the
 const children = computed(() => {
   if (!note.value) return [];
   const seen = new Map<string, number>();
-  const children: { id: string; key: string }[] = [];
+  const children = [];
   for (const id of note.value.children) {
-    const n = seen.get(id) || 0;
-    seen.set(id, n + 1);
-    const key = `${id}-${n}`;
-    children.push({ id, key });
+    const iteration = seen.get(id) || 0;
+    seen.set(id, iteration + 1);
+    children.push(new Segment(id, iteration));
   }
   return children;
 });
@@ -54,8 +54,8 @@ const mode = ref<"editing" | "creating">();
 const mayOpen = computed(() => children.value.length > 0);
 const open = computed(() => mayOpen.value && ui.isOpen(props.path));
 
-const focused = computed(() => ui.focusPath === props.path);
-const pinned = computed(() => ui.isPinned(props.path));
+const focused = computed(() => ui.focusPath.eq(props.path));
+const pinned = computed(() => ui.isPinned(props.segment, props.parentId));
 const hover = computed(() => hovering.value && mode.value !== "editing");
 
 const creating = computed(() => mode.value === "creating");
@@ -91,7 +91,7 @@ function onClick() {
 
 function onPinButtonClick() {
   if (pinned.value) ui.unsetPinned();
-  else ui.setPinned(props.path);
+  else ui.setPinned(props.segment, props.parentId);
 }
 
 function onEditButtonClick() {
@@ -125,7 +125,7 @@ function onCreateEditorFinish(text: string) {
   note.value.children.push(newNote.id);
 
   const lastChild = children.value.at(-1);
-  if (lastChild) ui.focusPath = pathAppend(props.path, lastChild.key);
+  if (lastChild) ui.focusPath = props.path.concat(lastChild);
 
   onCreateEditorClose();
 }
@@ -152,9 +152,9 @@ function onCreateEditorFinish(text: string) {
         <div
           class="rounded"
           :class="focused ? 'hover:bg-neutral-300' : 'hover:bg-neutral-200'"
-          @click.stop="ui.toggleOpen(props.path)"
+          @click.stop="ui.toggleOpen(path)"
         >
-          <RiArrowDownSLine v-if="open && props.forceOpen" size="16px" class="text-neutral-400" />
+          <RiArrowDownSLine v-if="open && forceOpen" size="16px" class="text-neutral-400" />
           <RiArrowDownSLine v-else-if="open" size="16px" />
           <RiArrowRightSLine v-else-if="mayOpen" size="16px" />
           <RiArrowRightSLine v-else size="16px" class="text-neutral-400" />
@@ -194,10 +194,10 @@ function onCreateEditorFinish(text: string) {
     <div v-if="open && children.length > 0" class="flex flex-col pl-2">
       <CNote
         v-for="child of children"
-        :key="child.key"
-        :noteId="child.id"
-        :parentId="props.noteId"
-        :path="pathAppend(path, child.key)"
+        :key="child.fmt()"
+        :path="path.concat(child)"
+        :segment="child"
+        :parentId="id"
       />
     </div>
 
