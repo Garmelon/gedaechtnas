@@ -7,12 +7,16 @@ function pathParse(path: string): string[] {
   return path.split("/");
 }
 
+export function pathSlice(path: string, start: number, end?: number): string {
+  return pathString(pathParse(path).slice(start, end));
+}
+
 export function pathAppend(path: string, key: string): string {
   return pathString(pathParse(path).concat(key));
 }
 
 export function pathAncestor(path: string): string {
-  return pathString(pathParse(path).slice(0, -1));
+  return pathSlice(path, 0, -1);
 }
 
 export function pathAncestors(path: string): string[] {

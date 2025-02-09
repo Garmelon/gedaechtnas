@@ -1,13 +1,15 @@
 <script setup lang="ts">
 import { useNotesStore } from "@/stores/notes";
 import { useUiStore } from "@/stores/ui";
-import { pathAppend } from "@/util";
+import { pathAppend, pathSlice } from "@/util";
 import {
   RiAddLine,
   RiArrowDownSLine,
   RiArrowRightSLine,
   RiCornerUpRightLine,
   RiEditLine,
+  RiPushpinFill,
+  RiPushpinLine,
   RiStickyNoteAddLine,
 } from "@remixicon/vue";
 import { computed, ref, watchEffect } from "vue";
@@ -53,6 +55,7 @@ const mayOpen = computed(() => children.value.length > 0);
 const open = computed(() => mayOpen.value && ui.isOpen(props.path));
 
 const focused = computed(() => ui.focusPath === props.path);
+const pinned = computed(() => ui.isPinned(props.path));
 const hover = computed(() => hovering.value && mode.value !== "editing");
 
 const creating = computed(() => mode.value === "creating");
@@ -84,6 +87,11 @@ function onClick() {
   }
 
   ui.toggleOpen(props.path);
+}
+
+function onPinButtonClick() {
+  if (pinned.value) ui.unsetPinned();
+  else ui.setPinned(props.path);
 }
 
 function onEditButtonClick() {
@@ -168,12 +176,16 @@ function onCreateEditorFinish(text: string) {
       <div v-else class="px-1 font-light italic">note not found</div>
 
       <!-- Controls -->
-      <div v-if="hover" class="absolute right-0 flex h-6 items-center gap-0.5">
-        <CNoteButton @click.stop="onEditButtonClick">
+      <div v-if="hover || pinned" class="absolute right-0 flex h-6 items-center gap-0.5">
+        <CNoteButton v-if="hover" @click.stop="onEditButtonClick">
           <RiEditLine size="16px" />
         </CNoteButton>
-        <CNoteButton @click.stop="onCreateButtonClick">
+        <CNoteButton v-if="hover" @click.stop="onCreateButtonClick">
           <RiStickyNoteAddLine size="16px" />
+        </CNoteButton>
+        <CNoteButton :inverted="pinned" @click.stop="onPinButtonClick">
+          <RiPushpinFill v-if="pinned" size="16px" />
+          <RiPushpinLine v-else size="16px" />
         </CNoteButton>
       </div>
     </div>
