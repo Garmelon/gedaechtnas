@@ -41,7 +41,9 @@ function createSomeNotes() {
     .map(({ it }) => it);
 }
 
-onMounted(() => createSomeNotes());
+onMounted(() => {
+  createSomeNotes();
+});
 </script>
 
 <template>

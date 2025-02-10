@@ -41,7 +41,7 @@ const children = computed(() => {
   const seen = new Map<string, number>();
   const children = [];
   for (const id of note.value.children) {
-    const iteration = seen.get(id) || 0;
+    const iteration = seen.get(id) ?? 0;
     seen.set(id, iteration + 1);
     children.push(new Segment(id, iteration));
   }

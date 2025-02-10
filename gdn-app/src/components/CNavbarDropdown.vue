@@ -19,7 +19,7 @@ const { floatingStyles } = useFloating(reference, floating, {
     offset(4),
     size({
       apply({ availableHeight, elements }) {
-        elements.floating.style.maxHeight = `${Math.max(100, availableHeight)}px`;
+        elements.floating.style.maxHeight = `${Math.max(100, availableHeight).toFixed()}px`;
       },
     }),
   ],

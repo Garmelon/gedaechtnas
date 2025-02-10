@@ -10,13 +10,19 @@ export class Segment {
   }
 
   static parse(text: string): Segment {
-    const match = text.match(/^([^/]+):([0-9]{1,10})$/);
+    const match = /^([^/]+):([0-9]{1,10})$/.exec(text);
     assert(match !== null, "invalid segment string");
-    return new Segment(match[1]!, Number.parseInt(match[2]!));
+
+    const id = match[1];
+    const iteration = match[2];
+    assert(id !== undefined, "invalid regex");
+    assert(iteration !== undefined, "invalid regex");
+
+    return new Segment(id, Number.parseInt(iteration));
   }
 
   fmt(): string {
-    return `${this.id}:${this.iteration}`;
+    return `${this.id}:${this.iteration.toFixed()}`;
   }
 
   eq(other: Segment): boolean {

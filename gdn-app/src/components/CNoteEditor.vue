@@ -13,7 +13,7 @@ const emit = defineEmits<{
 }>();
 
 const textarea = useTemplateRef<HTMLTextAreaElement>("textarea");
-const text = ref(props.initialText || "");
+const text = ref(props.initialText ?? "");
 
 onMounted(() => {
   textarea.value?.focus();
@@ -23,7 +23,7 @@ onMounted(() => {
 function updateTextareaHeight() {
   if (!textarea.value) return;
   textarea.value.style.height = "0px";
-  textarea.value.style.height = `${textarea.value.scrollHeight}px`;
+  textarea.value.style.height = `${textarea.value.scrollHeight.toFixed()}px`;
 }
 
 function onInput() {
