@@ -69,6 +69,7 @@ function onSelectRepo(id: string) {
   >
     <CNavbarDropdownEntry
       v-for="repo of repos.reposByName"
+      :key="repo.id"
       :class="{ 'font-medium': repo.id === repos.selectedRepoId }"
       @click="onSelectRepo(repo.id)"
     >

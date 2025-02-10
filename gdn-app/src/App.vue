@@ -25,7 +25,7 @@ window.addEventListener("keypress", (ev) => {
         v-if="ui.anchorId"
         :path="new Path()"
         :segment="new Segment(ui.anchorId, 0)"
-        :forceOpen="true"
+        :force-open="true"
       />
     </div>
   </div>

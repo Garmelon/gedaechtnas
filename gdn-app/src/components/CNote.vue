@@ -135,7 +135,7 @@ function onCreateEditorFinish(text: string) {
   <div class="flex flex-col">
     <!-- Parents -->
     <div v-if="parents.length > 0" class="pt-1">
-      <div v-for="parent of parents" class="pl-6 text-xs text-neutral-400">
+      <div v-for="parent of parents" :key="parent.id" class="pl-6 text-xs text-neutral-400">
         <RiCornerUpRightLine size="12px" class="inline" /> {{ parent.text }}
       </div>
     </div>
@@ -165,7 +165,7 @@ function onCreateEditorFinish(text: string) {
       <CNoteEditor
         v-if="editing"
         class="flex-1"
-        :initialText="note?.text"
+        :initial-text="note?.text"
         @close="onEditEditorClose"
         @finish="onEditEditorFinish"
       />
@@ -197,7 +197,7 @@ function onCreateEditorFinish(text: string) {
         :key="child.fmt()"
         :path="path.concat(child)"
         :segment="child"
-        :parentId="id"
+        :parent-id="id"
       />
     </div>
 

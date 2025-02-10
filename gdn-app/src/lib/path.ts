@@ -6,7 +6,7 @@ export class Segment {
     readonly iteration: number,
   ) {
     assert(Number.isInteger(iteration), "n must be an integer");
-    assert(iteration >= 0), "n must not be negative";
+    assert(iteration >= 0, "n must not be negative");
   }
 
   static parse(text: string): Segment {

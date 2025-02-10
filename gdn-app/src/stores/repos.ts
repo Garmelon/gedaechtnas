@@ -1,10 +1,10 @@
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
 
-type Repo = {
+interface Repo {
   id: string;
   name: string;
-};
+}
 
 export const useReposStore = defineStore("repos", () => {
   const repos = ref<Map<string, Repo>>(new Map());

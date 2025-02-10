@@ -1,11 +1,11 @@
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
 
-export type Note = {
+export interface Note {
   readonly id: string;
   text: string;
   children: string[];
-};
+}
 
 export const useNotesStore = defineStore("notes", () => {
   const notes = ref<Map<string, Note>>(new Map());
