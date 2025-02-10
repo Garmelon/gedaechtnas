@@ -1,6 +1,5 @@
 {
+  "css.lint.unknownAtRules": "ignore",
   "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "[toml]": {
-    "editor.defaultFormatter": "tamasfe.even-better-toml"
-  }
+  "[toml]": { "editor.defaultFormatter": "tamasfe.even-better-toml" }
 }
