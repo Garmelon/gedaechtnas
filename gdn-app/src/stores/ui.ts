@@ -20,7 +20,7 @@ export const useUiStore = defineStore("ui", () => {
     return openPaths.value.has(path.fmt());
   }
 
-  function setOpen(path: UiPath, value: boolean) {
+  function setOpen(path: UiPath, value: boolean): void {
     // Don't update openPaths unnecessarily.
     // Just in case vue itself doesn't debounce Set operations.
     if (value && !isOpen(path)) {
@@ -33,7 +33,7 @@ export const useUiStore = defineStore("ui", () => {
     }
   }
 
-  function toggleOpen(path: UiPath) {
+  function toggleOpen(path: UiPath): void {
     setOpen(path, !isOpen(path));
   }
 
@@ -42,11 +42,11 @@ export const useUiStore = defineStore("ui", () => {
     return pinned.value.segment.eq(segment) && pinned.value.parentId === parentId;
   }
 
-  function setPinned(segment: Segment, parentId?: string) {
+  function setPinned(segment: Segment, parentId?: string): void {
     pinned.value = { segment, parentId };
   }
 
-  function unsetPinned() {
+  function unsetPinned(): void {
     pinned.value = undefined;
   }
 

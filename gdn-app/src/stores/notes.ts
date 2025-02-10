@@ -37,7 +37,7 @@ export const useNotesStore = defineStore("notes", () => {
     return notes.value.get(id)!; // Re-getting so returned Note is reactive
   }
 
-  function clearNotes() {
+  function clearNotes(): void {
     notes.value.clear();
   }
 

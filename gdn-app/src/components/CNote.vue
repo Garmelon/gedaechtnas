@@ -76,11 +76,11 @@ watchEffect(() => {
   if (mode.value) focusOnThis();
 });
 
-function focusOnThis() {
+function focusOnThis(): void {
   ui.focusPath = props.path;
 }
 
-function onClick() {
+function onClick(): void {
   if (!focused.value) {
     focusOnThis();
     return;
@@ -89,36 +89,36 @@ function onClick() {
   ui.toggleOpen(props.path);
 }
 
-function onPinButtonClick() {
+function onPinButtonClick(): void {
   if (pinned.value) ui.unsetPinned();
   else ui.setPinned(props.segment, props.parentId);
 }
 
-function onEditButtonClick() {
+function onEditButtonClick(): void {
   if (!note.value) return;
   mode.value = "editing";
 }
 
-function onEditEditorClose() {
+function onEditEditorClose(): void {
   mode.value = undefined;
 }
 
-function onEditEditorFinish(text: string) {
+function onEditEditorFinish(text: string): void {
   if (!note.value) return;
   note.value.text = text;
   onEditEditorClose();
 }
 
-function onCreateButtonClick() {
+function onCreateButtonClick(): void {
   if (!note.value) return;
   mode.value = "creating";
 }
 
-function onCreateEditorClose() {
+function onCreateEditorClose(): void {
   mode.value = undefined;
 }
 
-function onCreateEditorFinish(text: string) {
+function onCreateEditorFinish(text: string): void {
   if (!note.value) return;
 
   const newNote = notes.createNote(text);

@@ -34,4 +34,19 @@ export default tseslint.config(
 
   // Tell the vue parser that it should use the ts parser instead of the js parser.
   { files: ["**/*.vue"], languageOptions: { parserOptions: { parser: tseslint.parser } } },
+
+  // My own rules.
+  //
+  // https://eslint.org/docs/latest/rules/
+  // https://typescript-eslint.io/rules/
+  // https://eslint.vuejs.org/rules/
+  {
+    rules: {
+      "@typescript-eslint/explicit-function-return-type": "error",
+      "vue/block-lang": ["error", { script: { lang: "ts" } }],
+      "vue/block-order": ["error", { order: ["script", "template", "style"] }],
+      "vue/component-api-style": ["error", ["script-setup"]],
+      "vue/v-for-delimiter-style": ["error", "of"],
+    },
+  },
 );

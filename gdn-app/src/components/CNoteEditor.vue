@@ -20,17 +20,17 @@ onMounted(() => {
   updateTextareaHeight();
 });
 
-function updateTextareaHeight() {
+function updateTextareaHeight(): void {
   if (!textarea.value) return;
   textarea.value.style.height = "0px";
   textarea.value.style.height = `${textarea.value.scrollHeight.toFixed()}px`;
 }
 
-function onInput() {
+function onInput(): void {
   updateTextareaHeight();
 }
 
-function onKeyPress(ev: KeyboardEvent) {
+function onKeyPress(ev: KeyboardEvent): void {
   if (ev.key === "Escape") {
     emit("close");
   } else if (ev.key === "Enter" && !ev.shiftKey) {

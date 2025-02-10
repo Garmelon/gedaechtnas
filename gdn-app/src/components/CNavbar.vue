@@ -17,7 +17,7 @@ function mkNote(text: string, ...children: string[]): Note {
   return note;
 }
 
-function createSomeNotes() {
+function createSomeNotes(): void {
   notes.clearNotes();
 
   const n2n1 = mkNote("n2n1");

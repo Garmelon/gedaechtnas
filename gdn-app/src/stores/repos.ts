@@ -23,12 +23,12 @@ export const useReposStore = defineStore("repos", () => {
 
   const repoIdsByName = computed<string[]>(() => reposByName.value.map((it) => it.id));
 
-  function addRepo(repo: Repo) {
+  function addRepo(repo: Repo): void {
     repos.value.set(repo.id, repo);
     selectedRepoId.value = repo.id;
   }
 
-  function removeRepo(id: string | undefined) {
+  function removeRepo(id: string | undefined): void {
     if (id === undefined) return;
     const i = repoIdsByName.value.indexOf(id);
     repos.value.delete(id);
@@ -38,7 +38,7 @@ export const useReposStore = defineStore("repos", () => {
     }
   }
 
-  function selectRepo(id: string | undefined) {
+  function selectRepo(id: string | undefined): void {
     if (id === undefined) return;
     if (repos.value.get(id) === undefined) return;
     selectedRepoId.value = id;
