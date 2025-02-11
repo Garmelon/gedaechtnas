@@ -194,7 +194,7 @@ function onMoveButtonClick(): void {
         </CNoteButton>
         <CNoteButton
           :visible="hover"
-          :disabled="ui.anchorId == segment.id"
+          :disabled="ui.anchorId === segment.id"
           @click.stop="onMoveButtonClick"
         >
           <RiArrowRightDoubleLine size="16px" />
