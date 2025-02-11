@@ -5,6 +5,7 @@ import { useUiStore } from "@/stores/ui";
 import {
   RiAddLine,
   RiArrowDownSLine,
+  RiArrowRightDoubleLine,
   RiArrowRightSLine,
   RiCornerUpRightLine,
   RiEditLine,
@@ -129,6 +130,10 @@ function onCreateEditorFinish(text: string): void {
 
   onCreateEditorClose();
 }
+
+function onMoveButtonClick(): void {
+  ui.anchorId = props.segment.id;
+}
 </script>
 
 <template>
@@ -186,6 +191,13 @@ function onCreateEditorFinish(text: string): void {
         <CNoteButton :visible="hover || pinned" :inverted="pinned" @click.stop="onPinButtonClick">
           <RiPushpinFill v-if="pinned" size="16px" />
           <RiPushpinLine v-else size="16px" />
+        </CNoteButton>
+        <CNoteButton
+          :visible="hover"
+          :disabled="ui.anchorId == segment.id"
+          @click.stop="onMoveButtonClick"
+        >
+          <RiArrowRightDoubleLine size="16px" />
         </CNoteButton>
       </div>
     </div>
