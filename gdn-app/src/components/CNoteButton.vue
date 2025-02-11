@@ -1,19 +1,29 @@
 <script setup lang="ts">
-const { visible, inverted = false } = defineProps<{
-  visible: boolean;
+const {
+  visible = true,
+  inverted = false,
+  disabled = false,
+} = defineProps<{
+  visible?: boolean;
   inverted?: boolean;
+  disabled?: boolean;
 }>();
 </script>
 
 <template>
-  <div
-    class="flex select-none items-center rounded-sm border p-0.5 transition hover:bg-neutral-200 active:scale-95"
+  <button
+    class="flex select-none items-center rounded-sm border border-black p-0.5 transition"
     :class="{
       'bg-white text-black': !inverted,
-      'border-black bg-black text-white hover:bg-neutral-600': inverted,
-      hidden: !visible,
+      'bg-black text-white': inverted,
+      'hover:bg-neutral-200': !disabled && !inverted,
+      'hover:bg-neutral-600': !disabled && inverted,
+      'active:scale-95': !disabled,
+      'opacity-40': disabled,
+      invisible: !visible,
     }"
+    :disabled
   >
     <slot></slot>
-  </div>
+  </button>
 </template>
