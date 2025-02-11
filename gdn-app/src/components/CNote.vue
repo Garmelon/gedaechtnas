@@ -176,14 +176,14 @@ function onCreateEditorFinish(text: string): void {
       <div v-else class="px-1 font-light italic">note not found</div>
 
       <!-- Controls -->
-      <div v-if="hover || pinned" class="absolute right-0 flex h-6 items-center gap-0.5">
-        <CNoteButton v-if="hover" @click.stop="onEditButtonClick">
+      <div class="absolute right-0 flex h-6 items-center gap-0.5">
+        <CNoteButton :visible="hover" @click.stop="onEditButtonClick">
           <RiEditLine size="16px" />
         </CNoteButton>
-        <CNoteButton v-if="hover" @click.stop="onCreateButtonClick">
+        <CNoteButton :visible="hover" @click.stop="onCreateButtonClick">
           <RiStickyNoteAddLine size="16px" />
         </CNoteButton>
-        <CNoteButton :inverted="pinned" @click.stop="onPinButtonClick">
+        <CNoteButton :visible="hover || pinned" :inverted="pinned" @click.stop="onPinButtonClick">
           <RiPushpinFill v-if="pinned" size="16px" />
           <RiPushpinLine v-else size="16px" />
         </CNoteButton>
