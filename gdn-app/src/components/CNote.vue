@@ -20,19 +20,24 @@ import CNoteEditor from "./CNoteEditor.vue";
 const notes = useNotesStore();
 const ui = useUiStore();
 
-const props = defineProps<{
+const {
+  path,
+  segment,
+  parentId,
+  forceOpen = false,
+} = defineProps<{
   path: Path; // From root to here
   segment: Segment;
   parentId?: string;
   forceOpen?: boolean;
 }>();
 
-const id = computed(() => props.segment.id);
+const id = computed(() => segment.id);
 const note = computed(() => notes.getNote(id.value));
 
 const parents = computed(() => {
   let parents = notes.getParents(id.value);
-  if (props.parentId) parents = parents.difference(new Set([props.parentId]));
+  if (parentId) parents = parents.difference(new Set([parentId]));
   return [...parents].sort().map((id) => ({ id, text: notes.getNote(id)?.text }));
 });
 
@@ -53,10 +58,10 @@ const hovering = ref(false);
 const mode = ref<"editing" | "creating">();
 
 const mayOpen = computed(() => children.value.length > 0);
-const open = computed(() => mayOpen.value && ui.isOpen(props.path));
+const open = computed(() => mayOpen.value && ui.isOpen(path));
 
-const focused = computed(() => ui.focusPath.eq(props.path));
-const pinned = computed(() => ui.isPinned(props.segment, props.parentId));
+const focused = computed(() => ui.focusPath.eq(path));
+const pinned = computed(() => ui.isPinned(segment, parentId));
 const hover = computed(() => hovering.value && mode.value !== "editing");
 
 const creating = computed(() => mode.value === "creating");
@@ -64,7 +69,7 @@ const editing = computed(() => mode.value === "editing");
 
 // Ensure we're open if we need to be.
 watchEffect(() => {
-  if (props.forceOpen || creating.value) ui.setOpen(props.path, true);
+  if (forceOpen || creating.value) ui.setOpen(path, true);
 });
 
 // Ensure only one editor is ever open.
@@ -78,7 +83,7 @@ watchEffect(() => {
 });
 
 function focusOnThis(): void {
-  ui.focusPath = props.path;
+  ui.focusPath = path;
 }
 
 function onClick(): void {
@@ -87,12 +92,12 @@ function onClick(): void {
     return;
   }
 
-  ui.toggleOpen(props.path);
+  ui.toggleOpen(path);
 }
 
 function onPinButtonClick(): void {
   if (pinned.value) ui.unsetPinned();
-  else ui.setPinned(props.segment, props.parentId);
+  else ui.setPinned(segment, parentId);
 }
 
 function onEditButtonClick(): void {
@@ -126,13 +131,13 @@ function onCreateEditorFinish(text: string): void {
   note.value.children.push(newNote.id);
 
   const lastChild = children.value.at(-1);
-  if (lastChild) ui.focusPath = props.path.concat(lastChild);
+  if (lastChild) ui.focusPath = path.concat(lastChild);
 
   onCreateEditorClose();
 }
 
 function onMoveButtonClick(): void {
-  ui.pushAnchorId(props.segment.id);
+  ui.pushAnchorId(segment.id);
 }
 </script>
 

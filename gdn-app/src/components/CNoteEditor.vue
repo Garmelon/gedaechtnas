@@ -3,7 +3,7 @@ import { RiCheckLine, RiCloseLine } from "@remixicon/vue";
 import { onMounted, ref, useTemplateRef } from "vue";
 import CNoteButton from "./CNoteButton.vue";
 
-const props = defineProps<{
+const { initialText = "" } = defineProps<{
   initialText?: string;
 }>();
 
@@ -13,7 +13,7 @@ const emit = defineEmits<{
 }>();
 
 const textarea = useTemplateRef<HTMLTextAreaElement>("textarea");
-const text = ref(props.initialText ?? "");
+const text = ref(initialText);
 
 onMounted(() => {
   textarea.value?.focus();
