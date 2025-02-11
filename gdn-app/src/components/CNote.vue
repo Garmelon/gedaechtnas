@@ -132,7 +132,7 @@ function onCreateEditorFinish(text: string): void {
 }
 
 function onMoveButtonClick(): void {
-  ui.anchorId = props.segment.id;
+  ui.pushAnchorId(props.segment.id);
 }
 </script>
 

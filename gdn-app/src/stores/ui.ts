@@ -1,11 +1,21 @@
 import { Segment, Path as UiPath } from "@/lib/path";
 import { defineStore } from "pinia";
-import { ref, watchEffect } from "vue";
+import { computed, ref, watchEffect } from "vue";
 
 export const useUiStore = defineStore("ui", () => {
-  const anchorId = ref<string>();
+  const history = ref<
+    {
+      anchorId: string;
+      focusPath: UiPath;
+      openPaths: Set<string>;
+    }[]
+  >([]);
+
+  const _anchorId = ref<string>();
+  const anchorId = computed(() => _anchorId.value);
   const focusPath = ref<UiPath>(new UiPath());
   const openPaths = ref<Set<string>>(new Set());
+
   const pinned = ref<{ segment: Segment; parentId?: string }>();
 
   // Ensure all nodes on the focusPath are unfolded.
@@ -15,6 +25,36 @@ export const useUiStore = defineStore("ui", () => {
       setOpen(ancestor, true);
     }
   });
+
+  function pushAnchorId(id: string): void {
+    if (_anchorId.value) {
+      history.value.push({
+        anchorId: _anchorId.value,
+        focusPath: focusPath.value,
+        openPaths: openPaths.value,
+      });
+    }
+
+    _anchorId.value = id;
+    focusPath.value = new UiPath();
+    openPaths.value = new Set();
+  }
+
+  function popAnchorId(): void {
+    // Temporary solution until I implement some UI for anchorId===undefined
+    if (history.value.length === 0) return;
+
+    const entry = history.value.pop();
+    if (entry) {
+      _anchorId.value = entry.anchorId;
+      focusPath.value = entry.focusPath;
+      openPaths.value = entry.openPaths;
+    } else {
+      _anchorId.value = undefined;
+      focusPath.value = new UiPath();
+      openPaths.value = new Set();
+    }
+  }
 
   function isOpen(path: UiPath): boolean {
     return openPaths.value.has(path.fmt());
@@ -53,6 +93,8 @@ export const useUiStore = defineStore("ui", () => {
   return {
     anchorId,
     focusPath,
+    pushAnchorId,
+    popAnchorId,
     isOpen,
     setOpen,
     toggleOpen,

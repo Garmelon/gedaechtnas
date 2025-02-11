@@ -2,7 +2,12 @@
 import { Note, useNotesStore } from "@/stores/notes";
 import { useReposStore } from "@/stores/repos";
 import { useUiStore } from "@/stores/ui";
-import { RiDeleteBinFill, RiNodeTree, RiSettings3Fill } from "@remixicon/vue";
+import {
+  RiArrowLeftDoubleLine,
+  RiDeleteBinFill,
+  RiNodeTree,
+  RiSettings3Fill,
+} from "@remixicon/vue";
 import { onMounted } from "vue";
 import CNavbarButton from "./CNavbarButton.vue";
 import CNavbarDropdown from "./CNavbarDropdown.vue";
@@ -32,7 +37,7 @@ function createSomeNotes(): void {
 
   const root = mkNote("root", n1.id, n2.id, n3.id, n4.id, n5.id, n2.id);
 
-  ui.anchorId = root.id;
+  ui.pushAnchorId(root.id);
 
   // Shuffle children of root
   root.children = root.children
@@ -53,6 +58,11 @@ onMounted(() => {
     <div class="mr-auto overflow-hidden">
       <CNavbarDropdown />
     </div>
+
+    <!-- Temporary back button -->
+    <CNavbarButton title="Go back" @click="ui.popAnchorId()">
+      <RiArrowLeftDoubleLine size="16px" class="inline" />
+    </CNavbarButton>
 
     <!-- Temporary button for testing -->
     <CNavbarButton title="Create dummy note tree" @click="createSomeNotes">
