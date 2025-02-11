@@ -11,7 +11,6 @@ import {
   RiEditLine,
   RiPushpinFill,
   RiPushpinLine,
-  RiStickyNoteAddLine,
 } from "@remixicon/vue";
 import { computed, ref, watchEffect } from "vue";
 import CNoteButton from "./CNoteButton.vue";
@@ -55,40 +54,24 @@ const children = computed(() => {
 });
 
 const hovering = ref(false);
-const mode = ref<"editing" | "creating">();
+const hover = computed(() => hovering.value && !editing.value);
 
 const mayOpen = computed(() => children.value.length > 0);
 const open = computed(() => mayOpen.value && ui.isOpen(path));
 
-const focused = computed(() => ui.focusPath.eq(path));
 const pinned = computed(() => ui.isPinned(segment, parentId));
-const hover = computed(() => hovering.value && mode.value !== "editing");
-
-const creating = computed(() => mode.value === "creating");
-const editing = computed(() => mode.value === "editing");
+const focused = computed(() => ui.isFocused(path));
+const editing = computed(() => ui.isEditing(path));
+const insertIndex = computed(() => ui.getInsertIndex(path));
 
 // Ensure we're open if we need to be.
 watchEffect(() => {
-  if (forceOpen || creating.value) ui.setOpen(path, true);
+  if (forceOpen || editing.value) ui.setOpen(path, true);
 });
-
-// Ensure only one editor is ever open.
-watchEffect(() => {
-  if (!focused.value) mode.value = undefined;
-});
-
-// Ensure we're focused when an editor is open.
-watchEffect(() => {
-  if (mode.value) focusOnThis();
-});
-
-function focusOnThis(): void {
-  ui.focusPath = path;
-}
 
 function onClick(): void {
   if (!focused.value) {
-    focusOnThis();
+    ui.focusOn(path);
     return;
   }
 
@@ -102,38 +85,17 @@ function onPinButtonClick(): void {
 
 function onEditButtonClick(): void {
   if (!note.value) return;
-  mode.value = "editing";
+  ui.edit(path);
 }
 
 function onEditEditorClose(): void {
-  mode.value = undefined;
+  ui.focus();
 }
 
 function onEditEditorFinish(text: string): void {
   if (!note.value) return;
   note.value.text = text;
   onEditEditorClose();
-}
-
-function onCreateButtonClick(): void {
-  if (!note.value) return;
-  mode.value = "creating";
-}
-
-function onCreateEditorClose(): void {
-  mode.value = undefined;
-}
-
-function onCreateEditorFinish(text: string): void {
-  if (!note.value) return;
-
-  const newNote = notes.createNote(text);
-  note.value.children.push(newNote.id);
-
-  const lastChild = children.value.at(-1);
-  if (lastChild) ui.focusPath = path.concat(lastChild);
-
-  onCreateEditorClose();
 }
 
 function onMoveButtonClick(): void {
@@ -190,9 +152,6 @@ function onMoveButtonClick(): void {
         <CNoteButton :visible="hover" @click.stop="onEditButtonClick">
           <RiEditLine size="16px" />
         </CNoteButton>
-        <CNoteButton :visible="hover" @click.stop="onCreateButtonClick">
-          <RiStickyNoteAddLine size="16px" />
-        </CNoteButton>
         <CNoteButton :visible="hover || pinned" :inverted="pinned" @click.stop="onPinButtonClick">
           <RiPushpinFill v-if="pinned" size="16px" />
           <RiPushpinLine v-else size="16px" />
@@ -209,21 +168,19 @@ function onMoveButtonClick(): void {
 
     <!-- Children -->
     <div v-if="open && children.length > 0" class="flex flex-col pl-2">
-      <CNote
-        v-for="child of children"
-        :key="child.fmt()"
-        :path="path.concat(child)"
-        :segment="child"
-        :parent-id="id"
-      />
-    </div>
-
-    <!-- Editor for creating new children -->
-    <div v-if="creating" class="flex items-start pl-3">
-      <div class="flex h-6 items-center">
-        <RiAddLine size="16px" />
+      <div v-if="insertIndex === 0" class="flex items-start pl-3">
+        <div class="flex h-6 items-center"><RiAddLine size="16px" /></div>
+        <CNoteEditor class="flex-1" />
       </div>
-      <CNoteEditor class="flex-1" @close="onCreateEditorClose" @finish="onCreateEditorFinish" />
+
+      <template v-for="(child, index) of children" :key="child.fmt()">
+        <CNote :path="path.concat(child)" :segment="child" :parent-id="id" />
+
+        <div v-if="insertIndex === index + 1" class="flex items-start pl-3">
+          <div class="flex h-6 items-center"><RiAddLine size="16px" /></div>
+          <CNoteEditor class="flex-1" />
+        </div>
+      </template>
     </div>
   </div>
 </template>

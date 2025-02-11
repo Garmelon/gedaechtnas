@@ -9,9 +9,9 @@ const ui = useUiStore();
 window.addEventListener("keypress", (ev) => {
   if (document.activeElement !== document.body) return;
 
-  if (ev.key === "Escape") {
+  if (ev.key === "Escape" && ui.mode === "focus") {
     const parent = ui.focusPath.parent();
-    if (parent) ui.focusPath = parent;
+    if (parent) ui.focusOn(parent);
     return;
   }
 });
