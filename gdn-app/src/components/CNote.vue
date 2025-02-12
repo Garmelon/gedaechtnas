@@ -83,6 +83,11 @@ function onClick(): void {
   ui.toggleOpen(path);
 }
 
+function onEditButtonClick(): void {
+  if (!note.value) return;
+  ui.edit(path);
+}
+
 function onInsertSiblingBeforeButtonClick(): void {
   const parent = path.parent();
   if (!parent) return;
@@ -99,9 +104,13 @@ function onInsertChildButtonClick(): void {
   ui.insertAt(path, children.value.length);
 }
 
-function onEditButtonClick(): void {
-  if (!note.value) return;
-  ui.edit(path);
+function onPinButtonClick(): void {
+  if (pinned.value) ui.unsetPinned();
+  else ui.setPinned(segment, parentId);
+}
+
+function onMoveButtonClick(): void {
+  ui.pushAnchorId(segment.id);
 }
 
 function onEditEditorClose(): void {
@@ -112,15 +121,6 @@ function onEditEditorFinish(text: string): void {
   if (!note.value) return;
   note.value.text = text;
   onEditEditorClose();
-}
-
-function onPinButtonClick(): void {
-  if (pinned.value) ui.unsetPinned();
-  else ui.setPinned(segment, parentId);
-}
-
-function onMoveButtonClick(): void {
-  ui.pushAnchorId(segment.id);
 }
 
 function onInsertEditorClose(): void {
