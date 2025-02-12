@@ -14,6 +14,7 @@ const emit = defineEmits<{
 
 const textarea = useTemplateRef<HTMLTextAreaElement>("textarea");
 const text = ref(initialText);
+// TODO Store text globally somewhere so it doesn't get lost when editor moves
 
 onMounted(() => {
   textarea.value?.focus();

@@ -12,7 +12,7 @@ const {
 
 <template>
   <button
-    class="flex select-none items-center rounded-sm border border-black p-0.5 transition"
+    class="flex h-5 w-5 select-none items-center justify-center rounded-sm border border-black transition"
     :class="{
       'bg-white text-black': !inverted,
       'bg-black text-white': inverted,
