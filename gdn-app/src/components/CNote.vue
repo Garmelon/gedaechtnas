@@ -129,7 +129,7 @@ function onEditEditorClose(): void {
 
 function onEditEditorFinish(text: string): void {
   if (!note.value) return;
-  note.value.text = text;
+  notes.setText(segment.id, text);
   onEditEditorClose();
 }
 
@@ -141,8 +141,8 @@ function onInsertEditorFinish(text: string): void {
   if (!note.value) return;
 
   if (insertIndex.value !== undefined) {
-    const childNote = notes.createNote(text);
-    note.value.children.splice(insertIndex.value, 0, childNote.id);
+    const child = notes.createNote(text);
+    notes.addChild(segment.id, child.id, insertIndex.value);
   }
 
   onInsertEditorClose();

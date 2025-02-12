@@ -18,7 +18,7 @@ const ui = useUiStore();
 
 function mkNote(text: string, ...children: string[]): Note {
   const note = notes.createNote(text);
-  children.forEach((it) => note.children.push(it));
+  for (const child of children) notes.addChild(note.id, child, -1);
   return note;
 }
 
@@ -40,10 +40,13 @@ function createSomeNotes(): void {
   ui.pushAnchorId(root.id);
 
   // Shuffle children of root
-  root.children = root.children
-    .map((it) => ({ it, rand: Math.random() }))
-    .sort((a, b) => a.rand - b.rand)
-    .map(({ it }) => it);
+  notes.setChildren(
+    root.id,
+    root.children
+      .map((it) => ({ it, rand: Math.random() }))
+      .sort((a, b) => a.rand - b.rand)
+      .map(({ it }) => it),
+  );
 }
 
 onMounted(() => {

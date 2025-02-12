@@ -4,12 +4,18 @@ import { computed, ref } from "vue";
 
 export interface Note {
   readonly id: string;
+  readonly text: string;
+  readonly children: readonly string[];
+}
+
+interface MutNote {
+  readonly id: string;
   text: string;
   children: string[];
 }
 
 export const useNotesStore = defineStore("notes", () => {
-  const notes = ref<Map<string, Note>>(new Map());
+  const notes = ref<Map<string, MutNote>>(new Map());
 
   const parents = computed(() => {
     const result = new Map<string, Set<string>>();
@@ -24,7 +30,14 @@ export const useNotesStore = defineStore("notes", () => {
   });
 
   function getNote(id: string): Note | undefined {
-    return notes.value.get(id);
+    const note = notes.value.get(id);
+    if (note === undefined) return;
+
+    return {
+      id,
+      text: note.text,
+      children: note.children.slice(),
+    };
   }
 
   function getParents(id: string): ReadonlySet<string> {
@@ -34,8 +47,7 @@ export const useNotesStore = defineStore("notes", () => {
   function createNote(text: string): Note {
     const id = crypto.randomUUID();
     notes.value.set(id, { id, text, children: [] });
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return notes.value.get(id)!; // Re-getting so returned Note is reactive
+    return { id, text, children: [] };
   }
 
   function deleteNote(id: string): void {
@@ -46,16 +58,31 @@ export const useNotesStore = defineStore("notes", () => {
     notes.value.delete(id);
   }
 
-  function addChild(id: string, childId: string, index: number): void {
-    const note = getNote(id);
-    if (!note) return;
+  function setText(id: string, text: string): void {
+    const note = notes.value.get(id);
+    if (note === undefined) return;
 
+    note.text = text;
+  }
+
+  function setChildren(id: string, children: string[]): void {
+    const note = notes.value.get(id);
+    if (note === undefined) return;
+
+    note.children = children.slice();
+  }
+
+  function addChild(id: string, childId: string, index: number): void {
+    const note = notes.value.get(id);
+    if (note === undefined) return;
+
+    if (index < 0) index = note.children.length + 1 + index;
     note.children.splice(index, 0, childId);
   }
 
   function removeChild(id: string, segment: Segment): void {
-    const note = getNote(id);
-    if (!note) return;
+    const note = notes.value.get(id);
+    if (note === undefined) return;
 
     let index = note.children.indexOf(segment.id);
     for (let i = 0; i < segment.iteration; i++) {
@@ -67,10 +94,10 @@ export const useNotesStore = defineStore("notes", () => {
   }
 
   function moveChild(fromId: string, segment: Segment, toId: string, toIndex: number): void {
-    const from = getNote(fromId);
+    const from = notes.value.get(fromId);
     if (!from) return;
 
-    const to = getNote(toId);
+    const to = notes.value.get(toId);
     if (!to) return;
 
     // Find child index
@@ -96,6 +123,8 @@ export const useNotesStore = defineStore("notes", () => {
     getParents,
     createNote,
     deleteNote,
+    setText,
+    setChildren,
     addChild,
     removeChild,
     moveChild,
