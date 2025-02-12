@@ -10,6 +10,7 @@ import {
   RiArrowUpWideLine,
   RiCornerDownRightLine,
   RiCornerUpRightLine,
+  RiDeleteBinLine,
   RiEditLine,
   RiPushpinFill,
   RiPushpinLine,
@@ -205,9 +206,14 @@ function onInsertEditorFinish(text: string): void {
         <CNoteButton :visible="hovering" @click.stop="onInsertChildButtonClick">
           <RiCornerDownRightLine size="16px" />
         </CNoteButton>
+        <div class="w-0.5"></div>
+        <CNoteButton :visible="hovering">
+          <RiDeleteBinLine size="16px" />
+        </CNoteButton>
         <CNoteButton :visible="hovering" @click.stop="onEditButtonClick">
           <RiEditLine size="16px" />
         </CNoteButton>
+        <div class="w-0.5"></div>
         <CNoteButton
           :visible="hovering || pinned"
           :inverted="pinned"
