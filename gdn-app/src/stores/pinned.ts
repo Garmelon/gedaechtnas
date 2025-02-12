@@ -13,7 +13,7 @@ type Mode =
   | { type: "edit"; path: UiPath }
   | { type: "insert"; path: UiPath; index: number };
 
-export const useUiStore = defineStore("ui", () => {
+export const usePinnedStore = defineStore("pinned", () => {
   const history = ref<HistoryEntry[]>([]);
 
   // Managed by history
@@ -91,6 +91,7 @@ export const useUiStore = defineStore("ui", () => {
   function getInsertIndex(path: UiPath): number | undefined {
     if (mode.value.type !== "insert") return;
     if (!mode.value.path.eq(path)) return;
+    if (mode.value.index < 0) return;
     return mode.value.index;
   }
 

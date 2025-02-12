@@ -1,3 +1,4 @@
+import { Segment } from "@/lib/path";
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
 
@@ -41,10 +42,32 @@ export const useNotesStore = defineStore("notes", () => {
     notes.value.clear();
   }
 
+  function addChild(id: string, childId: string, index: number): void {
+    const note = getNote(id);
+    if (!note) return;
+
+    note.children.splice(index, 0, childId);
+  }
+
+  function removeChild(id: string, segment: Segment): void {
+    const note = getNote(id);
+    if (!note) return;
+
+    let index = note.children.indexOf(segment.id);
+    for (let i = 0; i < segment.iteration; i++) {
+      index = note.children.indexOf(segment.id, index + 1);
+    }
+
+    if (index < 0) return;
+    note.children.splice(index, 1);
+  }
+
   return {
     getNote,
     getParents,
     createNote,
     clearNotes,
+    addChild,
+    removeChild,
   };
 });

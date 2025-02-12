@@ -2,8 +2,12 @@
 import { RiAddLine } from "@remixicon/vue";
 import CNoteEditor from "./CNoteEditor.vue";
 
+const { moveAndCopy = false } = defineProps<{
+  moveAndCopy?: boolean;
+}>();
+
 const emit = defineEmits<{
-  (e: "close"): void;
+  (e: "close" | "move" | "copy"): void;
   (e: "finish", text: string): void;
 }>();
 </script>
@@ -16,8 +20,11 @@ const emit = defineEmits<{
 
     <CNoteEditor
       class="flex-1"
+      :move-and-copy
       @close="() => emit('close')"
       @finish="(text) => emit('finish', text)"
+      @move="() => emit('move')"
+      @copy="() => emit('copy')"
     />
   </div>
 </template>

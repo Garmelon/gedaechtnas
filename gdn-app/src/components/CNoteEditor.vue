@@ -1,14 +1,15 @@
 <script setup lang="ts">
-import { RiCheckLine, RiCloseLine } from "@remixicon/vue";
+import { RiCheckLine, RiCloseLine, RiFileCopyLine, RiFileTransferLine } from "@remixicon/vue";
 import { onMounted, ref, useTemplateRef } from "vue";
 import CNoteButton from "./CNoteButton.vue";
 
-const { initialText = "" } = defineProps<{
+const { initialText = "", moveAndCopy = false } = defineProps<{
   initialText?: string;
+  moveAndCopy?: boolean;
 }>();
 
 const emit = defineEmits<{
-  (e: "close"): void;
+  (e: "close" | "move" | "copy"): void;
   (e: "finish", text: string): void;
 }>();
 
@@ -56,13 +57,17 @@ function onKeyPress(ev: KeyboardEvent): void {
       @click.stop
     ></textarea>
 
-    <div class="flex h-6 items-center">
+    <div class="flex h-6 items-center gap-0.5">
+      <CNoteButton v-if="moveAndCopy">
+        <RiFileTransferLine size="16px" @click.stop="emit('move')" />
+      </CNoteButton>
+      <CNoteButton v-if="moveAndCopy">
+        <RiFileCopyLine size="16px" @click.stop="emit('copy')" />
+      </CNoteButton>
+      <div v-if="moveAndCopy" class="w-0.5"></div>
       <CNoteButton @click.stop="emit('finish', text)">
         <RiCheckLine size="16px" />
       </CNoteButton>
-    </div>
-
-    <div class="flex h-6 items-center">
       <CNoteButton @click.stop="emit('close')">
         <RiCloseLine size="16px" />
       </CNoteButton>

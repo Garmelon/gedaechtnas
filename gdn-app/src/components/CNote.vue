@@ -137,6 +137,29 @@ function onInsertEditorFinish(text: string): void {
 
   onInsertEditorClose();
 }
+
+function onInsertEditorMove(): void {
+  if (!ui.pinned) return;
+  if (insertIndex.value === undefined) return;
+
+  if (ui.pinned.parentId) {
+    notes.removeChild(ui.pinned.parentId, ui.pinned.segment);
+  }
+
+  notes.addChild(segment.id, ui.pinned.segment.id, insertIndex.value);
+
+  onInsertEditorClose();
+  ui.unsetPinned();
+}
+
+function onInsertEditorCopy(): void {
+  if (!ui.pinned) return;
+  if (insertIndex.value === undefined) return;
+
+  notes.addChild(segment.id, ui.pinned.segment.id, insertIndex.value);
+
+  onInsertEditorClose();
+}
 </script>
 
 <template>
@@ -236,8 +259,11 @@ function onInsertEditorFinish(text: string): void {
     <div v-if="open || insertIndex !== undefined" class="flex flex-col pl-2">
       <CNoteChildEditor
         v-if="insertIndex === 0"
+        :move-and-copy="ui.pinned !== undefined"
         @close="onInsertEditorClose"
         @finish="onInsertEditorFinish"
+        @move="onInsertEditorMove"
+        @copy="onInsertEditorCopy"
       />
 
       <template v-for="(child, index) of children" :key="child.fmt()">
@@ -245,8 +271,11 @@ function onInsertEditorFinish(text: string): void {
 
         <CNoteChildEditor
           v-if="insertIndex === index + 1"
+          :move-and-copy="ui.pinned !== undefined"
           @close="onInsertEditorClose"
           @finish="onInsertEditorFinish"
+          @move="onInsertEditorMove"
+          @copy="onInsertEditorCopy"
         />
       </template>
     </div>
