@@ -38,8 +38,12 @@ export const useNotesStore = defineStore("notes", () => {
     return notes.value.get(id)!; // Re-getting so returned Note is reactive
   }
 
-  function clearNotes(): void {
-    notes.value.clear();
+  function deleteNote(id: string): void {
+    for (const note of notes.value.values()) {
+      note.children = note.children.filter((it) => it !== id);
+    }
+
+    notes.value.delete(id);
   }
 
   function addChild(id: string, childId: string, index: number): void {
@@ -83,13 +87,18 @@ export const useNotesStore = defineStore("notes", () => {
     to.children.splice(toIndex, 0, segment.id);
   }
 
+  function clearNotes(): void {
+    notes.value.clear();
+  }
+
   return {
     getNote,
     getParents,
     createNote,
-    clearNotes,
+    deleteNote,
     addChild,
     removeChild,
     moveChild,
+    clearNotes,
   };
 });

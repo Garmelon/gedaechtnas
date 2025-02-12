@@ -12,6 +12,7 @@ import {
   RiCornerUpRightLine,
   RiDeleteBinLine,
   RiEditLine,
+  RiLinkUnlinkM,
   RiPushpinFill,
   RiPushpinLine,
 } from "@remixicon/vue";
@@ -81,6 +82,15 @@ function onClick(): void {
   }
 
   ui.toggleOpen(path);
+}
+
+function onDeleteButtonClick(): void {
+  notes.deleteNote(segment.id);
+}
+
+function onUnlinkButtonClick(): void {
+  if (parentId === undefined) return;
+  notes.removeChild(parentId, segment);
 }
 
 function onEditButtonClick(): void {
@@ -208,8 +218,11 @@ function onInsertEditorCopy(): void {
 
       <!-- Controls -->
       <div v-show="!editing" class="absolute right-0 flex h-6 items-center gap-0.5">
-        <CNoteButton :visible="hovering">
+        <CNoteButton :visible="hovering" @click.stop="onDeleteButtonClick">
           <RiDeleteBinLine size="16px" />
+        </CNoteButton>
+        <CNoteButton :visible="hovering" @click.stop="onUnlinkButtonClick">
+          <RiLinkUnlinkM size="16px" />
         </CNoteButton>
         <CNoteButton :visible="hovering" @click.stop="onEditButtonClick">
           <RiEditLine size="16px" />
