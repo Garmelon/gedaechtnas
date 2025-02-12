@@ -143,10 +143,10 @@ function onInsertEditorMove(): void {
   if (insertIndex.value === undefined) return;
 
   if (ui.pinned.parentId) {
-    notes.removeChild(ui.pinned.parentId, ui.pinned.segment);
+    notes.moveChild(ui.pinned.parentId, ui.pinned.segment, segment.id, insertIndex.value);
+  } else {
+    notes.addChild(segment.id, ui.pinned.segment.id, insertIndex.value);
   }
-
-  notes.addChild(segment.id, ui.pinned.segment.id, insertIndex.value);
 
   onInsertEditorClose();
   ui.unsetPinned();
@@ -208,33 +208,21 @@ function onInsertEditorCopy(): void {
 
       <!-- Controls -->
       <div v-show="!editing" class="absolute right-0 flex h-6 items-center gap-0.5">
-        <!-- Maybe this should be two separate fullsize buttons so they're easier to click. -->
-        <!-- Maybe I should reorder/group the buttons, especially once I add a delete button. -->
-        <div class="flex h-5 w-5 flex-col">
-          <button
-            class="flex h-0 grow select-none items-center justify-center rounded-t-sm border border-b-0 border-black bg-white p-0.5 text-black transition hover:bg-neutral-200 active:scale-95"
-            :class="{ invisible: !hovering }"
-            @click.stop="onInsertSiblingBeforeButtonClick"
-          >
-            <RiArrowUpWideLine size="16px" />
-          </button>
-          <button
-            class="flex h-0 grow select-none items-center justify-center rounded-b-sm border border-t-0 border-black bg-white p-0.5 text-black transition hover:bg-neutral-200 active:scale-95"
-            :class="{ invisible: !hovering }"
-            @click.stop="onInsertSiblingAfterButtonClick"
-          >
-            <RiArrowDownWideLine size="16px" />
-          </button>
-        </div>
-        <CNoteButton :visible="hovering" @click.stop="onInsertChildButtonClick">
-          <RiCornerDownRightLine size="16px" />
-        </CNoteButton>
-        <div class="w-0.5"></div>
         <CNoteButton :visible="hovering">
           <RiDeleteBinLine size="16px" />
         </CNoteButton>
         <CNoteButton :visible="hovering" @click.stop="onEditButtonClick">
           <RiEditLine size="16px" />
+        </CNoteButton>
+        <div class="w-0.5"></div>
+        <CNoteButton :visible="hovering" @click.stop="onInsertSiblingBeforeButtonClick">
+          <RiArrowUpWideLine size="16px" />
+        </CNoteButton>
+        <CNoteButton :visible="hovering" @click.stop="onInsertSiblingAfterButtonClick">
+          <RiArrowDownWideLine size="16px" />
+        </CNoteButton>
+        <CNoteButton :visible="hovering" @click.stop="onInsertChildButtonClick">
+          <RiCornerDownRightLine size="16px" />
         </CNoteButton>
         <div class="w-0.5"></div>
         <CNoteButton

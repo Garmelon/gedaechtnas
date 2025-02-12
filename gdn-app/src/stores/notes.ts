@@ -62,6 +62,27 @@ export const useNotesStore = defineStore("notes", () => {
     note.children.splice(index, 1);
   }
 
+  function moveChild(fromId: string, segment: Segment, toId: string, toIndex: number): void {
+    const from = getNote(fromId);
+    if (!from) return;
+
+    const to = getNote(toId);
+    if (!to) return;
+
+    // Find child index
+    let fromIndex = from.children.indexOf(segment.id);
+    for (let i = 0; i < segment.iteration; i++) {
+      fromIndex = from.children.indexOf(segment.id, fromIndex + 1);
+    }
+    if (fromIndex < 0) return;
+
+    // Fix off-by-one caused by the deletion
+    if (fromId === toId && fromIndex < toIndex) toIndex--;
+
+    from.children.splice(fromIndex, 1);
+    to.children.splice(toIndex, 0, segment.id);
+  }
+
   return {
     getNote,
     getParents,
@@ -69,5 +90,6 @@ export const useNotesStore = defineStore("notes", () => {
     clearNotes,
     addChild,
     removeChild,
+    moveChild,
   };
 });
