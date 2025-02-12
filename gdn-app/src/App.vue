@@ -10,7 +10,7 @@ window.addEventListener("keypress", (ev) => {
   if (document.activeElement !== document.body) return;
 
   if (ev.key === "Escape") {
-    if (ui.mode !== "focus") {
+    if (ui.mode.type !== "focus") {
       ui.focus();
       return;
     }
