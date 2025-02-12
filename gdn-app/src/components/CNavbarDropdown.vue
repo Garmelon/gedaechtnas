@@ -28,7 +28,6 @@ const { floatingStyles } = useFloating(reference, floating, {
 function onAddNewRepo(): void {
   const id = crypto.randomUUID();
   repos.addRepo({ id, name: id });
-  console.log(repos.selectedRepo);
   open.value = false;
 }
 
