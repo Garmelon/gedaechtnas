@@ -1,5 +1,10 @@
 import { createPinia } from "pinia";
 import { createApp } from "vue";
 import App from "./App.vue";
+import { useNotesStore } from "./stores/notes";
 
-createApp(App).use(createPinia()).mount("#app");
+const app = createApp(App).use(createPinia());
+
+await useNotesStore().initialize();
+
+app.mount("#app");

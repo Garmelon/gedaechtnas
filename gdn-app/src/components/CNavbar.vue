@@ -16,41 +16,42 @@ const repos = useReposStore();
 const notes = useNotesStore();
 const ui = useUiStore();
 
-function mkNote(text: string, ...children: string[]): Note {
-  const note = notes.createNote(text);
-  for (const child of children) notes.addChild(note.id, child, -1);
+async function mkNote(text: string, ...children: string[]): Promise<Note> {
+  const note = await notes.createNote(text);
+  for (const child of children) await notes.addChild(note.id, child, -1);
   return note;
 }
 
-function createSomeNotes(): void {
-  notes.clearNotes();
+async function createSomeNotes(): Promise<void> {
+  await notes.clearNotes();
 
-  const n2n1 = mkNote("n2n1");
-  const n2n2 = mkNote("n2n2");
-  const n2n3 = mkNote("n2n3");
+  const n2n1 = await mkNote("n2n1");
+  const n2n2 = await mkNote("n2n2");
+  const n2n3 = await mkNote("n2n3");
 
-  const n1 = mkNote("n1");
-  const n2 = mkNote("n2", n2n1.id, n2n2.id, n2n3.id);
-  const n3 = mkNote("n3", n2n1.id);
-  const n4 = mkNote("n4");
-  const n5 = mkNote("n5", "NaN (not a note)");
+  const n1 = await mkNote("n1");
+  const n2 = await mkNote("n2", n2n1.id, n2n2.id, n2n3.id);
+  const n3 = await mkNote("n3", n2n1.id);
+  const n4 = await mkNote("n4");
+  const n5 = await mkNote("n5", "n0000000000000000");
 
-  const root = mkNote("root", n1.id, n2.id, n3.id, n4.id, n5.id, n2.id);
+  const root = await mkNote("root", n1.id, n2.id, n3.id, n4.id, n5.id, n2.id);
 
   ui.pushAnchorId(root.id);
 
   // Shuffle children of root
-  notes.setChildren(
+  const rootChildren = (await notes.getNote(root.id))?.children ?? [];
+  await notes.setChildren(
     root.id,
-    root.children
+    rootChildren
       .map((it) => ({ it, rand: Math.random() }))
       .sort((a, b) => a.rand - b.rand)
       .map(({ it }) => it),
   );
 }
 
-onMounted(() => {
-  createSomeNotes();
+onMounted(async () => {
+  await createSomeNotes();
 });
 </script>
 

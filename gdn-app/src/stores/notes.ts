@@ -1,126 +1,89 @@
+import {
+  apiNoteChildAdd,
+  apiNoteChildMove,
+  apiNoteChildRemove,
+  apiNoteChildrenSet,
+  apiNoteCreate,
+  apiNoteDelete,
+  apiNoteGet,
+  apiNotesClear,
+  apiNoteTextSet,
+} from "@/api";
 import { Segment } from "@/lib/path";
+import { EventNoteStoreUpdate } from "@/types";
+import { listen } from "@tauri-apps/api/event";
 import { defineStore } from "pinia";
-import { computed, ref } from "vue";
+import { ref } from "vue";
 
 export interface Note {
   readonly id: string;
   readonly text: string;
   readonly children: readonly string[];
-}
-
-interface MutNote {
-  readonly id: string;
-  text: string;
-  children: string[];
+  readonly parents: ReadonlySet<string>;
 }
 
 export const useNotesStore = defineStore("notes", () => {
-  const notes = ref<Map<string, MutNote>>(new Map());
+  const storeId = ref<number>();
 
-  const parents = computed(() => {
-    const result = new Map<string, Set<string>>();
-    for (const note of notes.value.values()) {
-      for (const childId of note.children) {
-        const parents = result.get(childId) ?? new Set();
-        result.set(childId, parents);
-        parents.add(note.id);
-      }
-    }
-    return result;
-  });
-
-  function getNote(id: string): Note | undefined {
-    const note = notes.value.get(id);
-    if (note === undefined) return;
-
-    return {
-      id,
-      text: note.text,
-      children: note.children.slice(),
-    };
+  async function initialize(): Promise<void> {
+    await listen("notes_store_update", (ev) => {
+      const data = EventNoteStoreUpdate.parse(ev.payload);
+      if (storeId.value === undefined || storeId.value < data.storeId) storeId.value = data.storeId;
+    });
   }
 
-  function getParents(id: string): ReadonlySet<string> {
-    return parents.value.get(id) ?? new Set();
+  function dependOnStoreId(): void {
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+    storeId.value;
   }
 
-  function createNote(text: string): Note {
-    const id = crypto.randomUUID();
-    notes.value.set(id, { id, text, children: [] });
-    return { id, text, children: [] };
+  async function getNote(id: string): Promise<Note | null> {
+    dependOnStoreId();
+    return apiNoteGet(id);
   }
 
-  function deleteNote(id: string): void {
-    for (const note of notes.value.values()) {
-      note.children = note.children.filter((it) => it !== id);
-    }
-
-    notes.value.delete(id);
+  async function createNote(text: string): Promise<Note> {
+    dependOnStoreId();
+    return apiNoteCreate(text);
   }
 
-  function setText(id: string, text: string): void {
-    const note = notes.value.get(id);
-    if (note === undefined) return;
-
-    note.text = text;
+  async function deleteNote(id: string): Promise<void> {
+    return apiNoteDelete(id);
   }
 
-  function setChildren(id: string, children: string[]): void {
-    const note = notes.value.get(id);
-    if (note === undefined) return;
-
-    note.children = children.slice();
+  async function setText(id: string, text: string): Promise<void> {
+    return apiNoteTextSet(id, text);
   }
 
-  function addChild(id: string, childId: string, index: number): void {
-    const note = notes.value.get(id);
-    if (note === undefined) return;
-
-    if (index < 0) index = note.children.length + 1 + index;
-    note.children.splice(index, 0, childId);
+  async function setChildren(id: string, children: string[]): Promise<void> {
+    return apiNoteChildrenSet(id, children);
   }
 
-  function removeChild(id: string, segment: Segment): void {
-    const note = notes.value.get(id);
-    if (note === undefined) return;
-
-    let index = note.children.indexOf(segment.id);
-    for (let i = 0; i < segment.iteration; i++) {
-      index = note.children.indexOf(segment.id, index + 1);
-    }
-
-    if (index < 0) return;
-    note.children.splice(index, 1);
+  async function addChild(id: string, childId: string, childPosition: number): Promise<void> {
+    return apiNoteChildAdd(id, childId, childPosition);
   }
 
-  function moveChild(fromId: string, segment: Segment, toId: string, toIndex: number): void {
-    const from = notes.value.get(fromId);
-    if (!from) return;
-
-    const to = notes.value.get(toId);
-    if (!to) return;
-
-    // Find child index
-    let fromIndex = from.children.indexOf(segment.id);
-    for (let i = 0; i < segment.iteration; i++) {
-      fromIndex = from.children.indexOf(segment.id, fromIndex + 1);
-    }
-    if (fromIndex < 0) return;
-
-    // Fix off-by-one caused by the deletion
-    if (fromId === toId && fromIndex < toIndex) toIndex--;
-
-    from.children.splice(fromIndex, 1);
-    to.children.splice(toIndex, 0, segment.id);
+  async function removeChild(id: string, segment: Segment): Promise<void> {
+    return apiNoteChildRemove(id, segment.id, segment.iteration);
   }
 
-  function clearNotes(): void {
-    notes.value.clear();
+  async function moveChild(
+    fromId: string,
+    segment: Segment,
+    toId: string,
+    toPosition: number,
+  ): Promise<void> {
+    return apiNoteChildMove(segment.id, fromId, segment.iteration, toId, toPosition);
+  }
+
+  async function clearNotes(): Promise<void> {
+    return apiNotesClear();
   }
 
   return {
+    storeId,
+    initialize,
     getNote,
-    getParents,
     createNote,
     deleteNote,
     setText,

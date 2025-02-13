@@ -20,6 +20,7 @@ import { computed, ref, watchEffect } from "vue";
 import CNoteButton from "./CNoteButton.vue";
 import CNoteChildEditor from "./CNoteChildEditor.vue";
 import CNoteEditor from "./CNoteEditor.vue";
+import { computedAsync } from "@vueuse/core";
 
 const notes = useNotesStore();
 const ui = useUiStore();
@@ -39,15 +40,21 @@ const {
 }>();
 
 const id = computed(() => segment.id);
-const note = computed(() => notes.getNote(id.value));
+const note = computedAsync(async () => await notes.getNote(id.value));
 
-const parents = computed(() => {
-  let parents = notes.getParents(id.value);
-  if (parentId) parents = parents.difference(new Set([parentId]));
-  return [...parents].sort().map((id) => ({ id, text: notes.getNote(id)?.text }));
+const parents = computedAsync(async () => {
+  const result = [];
+  for (const parent of note.value?.parents ?? new Set()) {
+    if (parentId !== undefined && parent === parentId) continue;
+    result.push({
+      id: parent,
+      text: (await notes.getNote(parent))?.text,
+    });
+  }
+  result.sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0));
+  return result;
 });
 
-// Our children and the
 const children = computed(() => {
   if (!note.value) return [];
   const seen = new Map<string, number>();
@@ -84,13 +91,13 @@ function onClick(): void {
   ui.toggleOpen(path);
 }
 
-function onDeleteButtonClick(): void {
-  notes.deleteNote(segment.id);
+async function onDeleteButtonClick(): Promise<void> {
+  await notes.deleteNote(segment.id);
 }
 
-function onUnlinkButtonClick(): void {
+async function onUnlinkButtonClick(): Promise<void> {
   if (parentId === undefined) return;
-  notes.removeChild(parentId, segment);
+  await notes.removeChild(parentId, segment);
 }
 
 function onEditButtonClick(): void {
@@ -127,9 +134,9 @@ function onEditEditorClose(): void {
   ui.focus();
 }
 
-function onEditEditorFinish(text: string): void {
+async function onEditEditorFinish(text: string): Promise<void> {
   if (!note.value) return;
-  notes.setText(segment.id, text);
+  await notes.setText(segment.id, text);
   onEditEditorClose();
 }
 
@@ -137,36 +144,36 @@ function onInsertEditorClose(): void {
   ui.focus();
 }
 
-function onInsertEditorFinish(text: string): void {
+async function onInsertEditorFinish(text: string): Promise<void> {
   if (!note.value) return;
 
   if (insertIndex.value !== undefined) {
-    const child = notes.createNote(text);
-    notes.addChild(segment.id, child.id, insertIndex.value);
+    const child = await notes.createNote(text);
+    await notes.addChild(segment.id, child.id, insertIndex.value);
   }
 
   onInsertEditorClose();
 }
 
-function onInsertEditorMove(): void {
+async function onInsertEditorMove(): Promise<void> {
   if (!ui.pinned) return;
   if (insertIndex.value === undefined) return;
 
   if (ui.pinned.parentId) {
-    notes.moveChild(ui.pinned.parentId, ui.pinned.segment, segment.id, insertIndex.value);
+    await notes.moveChild(ui.pinned.parentId, ui.pinned.segment, segment.id, insertIndex.value);
   } else {
-    notes.addChild(segment.id, ui.pinned.segment.id, insertIndex.value);
+    await notes.addChild(segment.id, ui.pinned.segment.id, insertIndex.value);
   }
 
   onInsertEditorClose();
   ui.unsetPinned();
 }
 
-function onInsertEditorCopy(): void {
+async function onInsertEditorCopy(): Promise<void> {
   if (!ui.pinned) return;
   if (insertIndex.value === undefined) return;
 
-  notes.addChild(segment.id, ui.pinned.segment.id, insertIndex.value);
+  await notes.addChild(segment.id, ui.pinned.segment.id, insertIndex.value);
 
   onInsertEditorClose();
 }
@@ -175,7 +182,7 @@ function onInsertEditorCopy(): void {
 <template>
   <div class="flex flex-col">
     <!-- Parents -->
-    <div v-if="parents.length > 0" class="pt-1">
+    <div v-if="(parents?.length ?? 0) > 0" class="pt-1">
       <div v-for="parent of parents" :key="parent.id" class="pl-6 text-xs text-neutral-400">
         <RiCornerUpRightLine size="12px" class="inline" /> {{ parent.text }}
       </div>
