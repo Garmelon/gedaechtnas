@@ -1,0 +1,89 @@
+# What software is installed by default:
+# https://docs.github.com/en/actions/using-github-hosted-runners/using-github-hosted-runners/about-github-hosted-runners#supported-runners-and-hardware-resources
+
+name: build
+
+on:
+  push:
+  pull_request:
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      # https://github.com/tauri-apps/tauri-action?tab=readme-ov-file#usage
+      # https://docs.github.com/en/actions/using-github-hosted-runners/using-github-hosted-runners/customizing-github-hosted-runners#installing-software-on-ubuntu-runners
+      - name: Install tauri dependencies
+        run: |
+          sudo apt update
+          sudo apt install libwebkit2gtk-4.1-dev
+
+      - name: Build
+        run: ./meta/build
+
+      - name: Upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: gdn-linux
+          path: |
+            target/release/gdn-cli
+            target/release/gdn-app
+
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Build
+        run: ./meta/build
+
+      - name: Upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: gdn-windows
+          path: |
+            target/release/gdn-cli.exe
+            target/release/gdn-app.exe
+
+  release:
+    runs-on: ubuntu-latest
+    if: ${{ startsWith(github.ref, 'refs/tags/v') }}
+    needs:
+      - build-linux
+      - build-windows
+    permissions:
+      contents: write
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+
+      - name: Zip artifacts
+        run: |
+          zip -r gdn-linux.zip gdn-linux
+          zip -r gdn-windows.zip gdn-windows
+
+      - name: Create new release
+        uses: softprops/action-gh-release@v2
+        with:
+          body: Automated release
+          files: |
+            gdn-linux.zip
+            gdn-windows.zip
