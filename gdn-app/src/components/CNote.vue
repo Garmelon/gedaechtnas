@@ -224,7 +224,7 @@ async function onInsertEditorCopy(): Promise<void> {
         {{ note.text }}
       </div>
       <div v-else-if="note" class="px-1 font-light italic">empty</div>
-      <div v-else class="px-1 font-light italic">note not found</div>
+      <div v-else class="px-1 font-light italic">loading...</div>
 
       <!-- Controls -->
       <div v-show="!editing" class="absolute right-0 flex h-6 items-center gap-0.5">
