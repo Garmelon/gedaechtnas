@@ -55,7 +55,14 @@ impl Store {
         self.curr_id += 1;
     }
 
-    fn update_parents(&mut self) {
+    fn make_consistent_and_tick(&mut self) {
+        // Remove child notes that don't exist
+        let children = self.notes.keys().copied().collect::<HashSet<_>>();
+        for info in &mut self.notes.values_mut() {
+            info.children.retain(|child| children.contains(child));
+        }
+
+        // Update parents to match new child notes
         self.parents.clear();
         for (id, info) in &self.notes {
             for child in &info.children {
@@ -67,6 +74,8 @@ impl Store {
                     .or_default() += 1;
             }
         }
+
+        self.tick();
     }
 
     pub fn create(&mut self, text: String) -> NoteId {
@@ -77,16 +86,14 @@ impl Store {
         };
 
         self.notes.insert(id, info);
-        self.update_parents();
-        self.tick();
+        self.make_consistent_and_tick();
 
         id
     }
 
     pub fn delete(&mut self, id: NoteId) -> Option<NoteInfo> {
         let info = self.notes.remove(&id)?;
-        self.update_parents();
-        self.tick();
+        self.make_consistent_and_tick();
         Some(info)
     }
 
@@ -106,7 +113,7 @@ impl Store {
             return None;
         }
         note.children = children;
-        self.tick();
+        self.make_consistent_and_tick();
         Some(())
     }
 
@@ -165,8 +172,7 @@ impl Store {
         let index = Self::resolve_child_position(&note.children, child_position);
         note.children.insert(index, child_id);
 
-        self.update_parents();
-        self.tick();
+        self.make_consistent_and_tick();
         Some(())
     }
 
@@ -183,8 +189,7 @@ impl Store {
         let index = Self::resolve_child_iteration(&note.children, child_id, child_iteration)?;
         note.children.remove(index);
 
-        self.update_parents();
-        self.tick();
+        self.make_consistent_and_tick();
         Some(())
     }
 
@@ -224,15 +229,12 @@ impl Store {
             .children
             .insert(to_idx, child_id);
 
-        self.update_parents();
-        self.tick();
+        self.make_consistent_and_tick();
         Some(())
     }
 
     pub fn clear(&mut self) {
         self.notes.clear();
-
-        self.update_parents();
-        self.tick();
+        self.make_consistent_and_tick();
     }
 }
