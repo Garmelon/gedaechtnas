@@ -23,7 +23,7 @@ window.addEventListener("keypress", (ev) => {
 </script>
 
 <template>
-  <div class="flex h-screen touch-pan-x touch-pan-y flex-col">
+  <div class="flex h-screen touch-pan-x touch-pan-y select-none flex-col">
     <CNavbar />
     <div class="h-full overflow-auto p-1 pr-5">
       <CNote

@@ -217,7 +217,10 @@ async function onInsertEditorCopy(): Promise<void> {
         @close="onEditEditorClose"
         @finish="onEditEditorFinish"
       />
-      <div v-else-if="note && note.text.trim().length > 0" class="whitespace-pre-wrap px-1">
+      <div
+        v-else-if="note && note.text.trim().length > 0"
+        class="select-auto whitespace-pre-wrap px-1"
+      >
         {{ note.text }}
       </div>
       <div v-else-if="note" class="px-1 font-light italic">empty</div>

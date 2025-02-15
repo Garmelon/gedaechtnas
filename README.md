@@ -14,7 +14,6 @@ variations or spellings are incorrect.
 ## Todos
 
 - TODO Fix wide notes adding horizontal scroll bar
-- TODO Make text not selectable by default
 - TODO Fix deleting note not unlinking it (and maybe other child inconsistencies
   as well)
 - TODO Rename "note not found" to "loading..."
