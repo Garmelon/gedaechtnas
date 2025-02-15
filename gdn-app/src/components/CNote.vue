@@ -180,7 +180,7 @@ async function onInsertEditorCopy(): Promise<void> {
 </script>
 
 <template>
-  <div class="flex flex-col">
+  <div class="flex min-w-24 flex-col">
     <!-- Parents -->
     <div v-if="(parents?.length ?? 0) > 0" class="pt-1">
       <div v-for="parent of parents" :key="parent.id" class="pl-6 text-xs text-neutral-400">
