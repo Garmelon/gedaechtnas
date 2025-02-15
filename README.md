@@ -13,7 +13,6 @@ variations or spellings are incorrect.
 
 ## Todos
 
-- TODO Fix wide notes adding horizontal scroll bar
 - TODO Add history widget to top of screen
 - TODO Show pinned message at bottom of screen
 - TODO Gray out unusable sibling buttons when hovering over anchor note

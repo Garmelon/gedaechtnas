@@ -219,7 +219,11 @@ async function onInsertEditorCopy(): Promise<void> {
       />
       <div
         v-else-if="note && note.text.trim().length > 0"
-        class="select-auto whitespace-pre-wrap px-1"
+        class="select-auto whitespace-pre-wrap text-wrap px-1"
+        style="
+          /* TODO Check https://github.com/tailwindlabs/tailwindcss/pull/12128 */
+          overflow-wrap: anywhere;
+        "
       >
         {{ note.text }}
       </div>
