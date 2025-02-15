@@ -38,6 +38,7 @@ async function createSomeNotes(): Promise<void> {
   const root = await mkNote("root", n1.id, n2.id, n3.id, n4.id, n5.id, n2.id);
 
   ui.pushAnchorId(root.id);
+  ui.history = [];
 
   // Shuffle children of root
   const rootChildren = (await notes.getNote(root.id))?.children ?? [];
