@@ -6,7 +6,8 @@ use serde::{Deserialize, Deserializer, Serialize, Serializer};
 ///
 /// The id consists of 8 bytes. The first 5 bytes are an epoch timestamp in
 /// seconds, while the remaining 3 bytes are a random number, meant to avoid
-/// collisions when two ids are created at the same time on different devices.
+/// collisions when two ids are created during the same second, possibly even on
+/// different devices.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 struct TimestampId(u64);
 
