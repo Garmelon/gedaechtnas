@@ -16,3 +16,5 @@ variations or spellings are incorrect.
 - TODO Add history widget to top of screen
 - TODO Show pinned message at bottom of screen
 - TODO Gray out unusable sibling buttons when hovering over anchor note
+- TODO Tooltips for note actions
+- TODO Clickable parents
