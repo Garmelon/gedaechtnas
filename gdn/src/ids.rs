@@ -87,7 +87,7 @@ impl FromStr for NoteId {
 
 impl Serialize for NoteId {
     fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
-        format!("{self}").serialize(serializer)
+        self.to_string().serialize(serializer)
     }
 }
 
@@ -96,5 +96,51 @@ impl<'de> Deserialize<'de> for NoteId {
         <&'de str as Deserialize<'de>>::deserialize(deserializer)?
             .parse()
             .map_err(|()| serde::de::Error::custom("invalid note id"))
+    }
+}
+
+/// The id for a note repository.
+#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct RepoId(TimestampId);
+
+impl RepoId {
+    #[allow(clippy::new_without_default)] // Because side-effects
+    pub fn new() -> Self {
+        Self(TimestampId::new())
+    }
+}
+
+impl fmt::Debug for RepoId {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "RepoId({self})")
+    }
+}
+
+impl fmt::Display for RepoId {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "r{}", self.0)
+    }
+}
+
+impl FromStr for RepoId {
+    type Err = ();
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let s = s.strip_prefix("r").ok_or(())?;
+        Ok(Self(s.parse()?))
+    }
+}
+
+impl Serialize for RepoId {
+    fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
+        self.to_string().serialize(serializer)
+    }
+}
+
+impl<'de> Deserialize<'de> for RepoId {
+    fn deserialize<D: Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        <&'de str as Deserialize<'de>>::deserialize(deserializer)?
+            .parse()
+            .map_err(|()| serde::de::Error::custom("invalid repo id"))
     }
 }
