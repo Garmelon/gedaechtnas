@@ -1,8 +1,7 @@
 use std::collections::HashSet;
 
+use gdn::ids::NoteId;
 use serde::Serialize;
-
-use crate::ids::NoteId;
 
 #[derive(Serialize)]
 #[serde(rename_all = "camelCase")]

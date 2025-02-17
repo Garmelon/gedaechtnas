@@ -1,6 +1,8 @@
 use std::collections::{HashMap, HashSet};
 
-use crate::{ids::NoteId, types::Note};
+use gdn::ids::NoteId;
+
+use crate::types::Note;
 
 #[derive(Debug)]
 pub struct NoteInfo {

@@ -3,7 +3,6 @@ use std::sync::{Arc, Mutex};
 use store::Store;
 
 mod api;
-mod ids;
 pub mod store;
 mod types;
 

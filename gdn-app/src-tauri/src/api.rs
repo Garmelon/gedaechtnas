@@ -1,9 +1,9 @@
 use std::sync::{Arc, Mutex};
 
+use gdn::ids::NoteId;
 use tauri::{AppHandle, Emitter, State};
 
 use crate::{
-    ids::NoteId,
     store::Store,
     types::{EventNotesStoreUpdate, Note},
 };
