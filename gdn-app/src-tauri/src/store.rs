@@ -212,7 +212,7 @@ impl Store {
         let mut to_idx = Self::resolve_child_position(&to.children, to_position);
 
         if from_id == to_id && from_idx < to_idx {
-            to_idx += 1;
+            to_idx -= 1;
         }
 
         let removed_id = self
