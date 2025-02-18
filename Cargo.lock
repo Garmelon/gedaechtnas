@@ -1452,9 +1452,11 @@ dependencies = [
 name = "gdn"
 version = "0.0.0"
 dependencies = [
+ "anyhow",
  "directories",
  "rand 0.9.0",
  "serde",
+ "serde_json",
 ]
 
 [[package]]
