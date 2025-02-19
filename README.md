@@ -18,3 +18,4 @@ variations or spellings are incorrect.
 - TODO Gray out unusable sibling buttons when hovering over anchor note
 - TODO Tooltips for note actions
 - TODO Clickable parents
+- TODO Logging (using `tracing`)
