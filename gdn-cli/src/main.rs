@@ -3,7 +3,6 @@ mod commands;
 use std::path::PathBuf;
 
 use clap::Parser;
-use gdn::Paths;
 
 use crate::commands::Command;
 
@@ -19,26 +18,23 @@ struct Args {
 }
 
 struct Environment {
-    paths: Paths,
+    data_dir: PathBuf,
+}
+
+fn run() -> anyhow::Result<()> {
+    let args = Args::parse();
+
+    let env = Environment {
+        data_dir: gdn::data::path()?,
+    };
+
+    println!("Data dir: {}", env.data_dir.display());
+    args.cmd.run(&env)?;
+    Ok(())
 }
 
 fn main() {
-    let args = Args::parse();
-
-    let paths = if cfg!(unix) {
-        Paths::on_linux().unwrap()
-    } else if cfg!(windows) {
-        Paths::on_windows().unwrap()
-    } else {
-        panic!("running on unsupported platform, only Linux and Windows are supported")
-    };
-
-    println!("State file: {}", paths.state_file().display());
-    println!("Repos dir:  {}", paths.repos_dir().display());
-
-    let env = Environment { paths };
-
-    if let Err(err) = args.cmd.run(&env) {
+    if let Err(err) = run() {
         println!();
         eprintln!("{err:?}");
         std::process::exit(1);

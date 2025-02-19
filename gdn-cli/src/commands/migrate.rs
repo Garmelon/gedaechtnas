@@ -1,18 +1,14 @@
-mod migrate;
-
 use clap::Parser;
 
 use crate::Environment;
 
+/// Create or migrate the data dir, if necessary.
 #[derive(Debug, Parser)]
-pub enum Command {
-    Migrate(migrate::Command),
-}
+pub struct Command {}
 
 impl Command {
     pub fn run(self, env: &Environment) -> anyhow::Result<()> {
-        match self {
-            Self::Migrate(command) => command.run(env),
-        }
+        gdn::data::open_and_migrate(env.data_dir.clone())?;
+        Ok(())
     }
 }

@@ -1,8 +1,5 @@
 pub mod data;
 pub mod ids;
-mod paths;
-
-pub use crate::paths::Paths;
 
 pub const PROPER_NAME: &str = "GedächtNAS";
 pub const TECHNICAL_NAME: &str = "gedaechtnas";
