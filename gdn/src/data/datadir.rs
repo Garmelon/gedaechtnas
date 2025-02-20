@@ -104,6 +104,7 @@ impl UnlockedDataDir {
     pub(super) fn read_version(&self) -> anyhow::Result<u32> {
         let path = self.version_file();
         match self.read_string_optional(&path)? {
+            None if self.path.exists() => Err(anyhow!("found data dir without version number")),
             None => Ok(0),
             Some(string) => Ok(string.trim().parse().with_context(|| {
                 format!("failed to parse {} as version number", path.display())
