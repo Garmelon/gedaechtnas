@@ -3,7 +3,6 @@ use std::{
     fs,
     io::ErrorKind,
     ops::Deref,
-    os::unix::ffi::OsStrExt,
     path::{Path, PathBuf},
 };
 
@@ -24,9 +23,22 @@ fn tmp_file_name(name: &OsStr) -> OsString {
         .collect::<String>();
 
     let mut tmp_name = OsString::new();
-    if !tmp_name.as_bytes().starts_with(b".") {
+
+    // Ensure temporary file always starts with a '.', i.e. it is hidden.
+    #[cfg(unix)]
+    let starts_with_dot = {
+        use std::os::unix::ffi::OsStrExt;
+        tmp_name.as_bytes().starts_with(b".")
+    };
+    #[cfg(windows)]
+    let starts_with_dot = {
+        use std::os::windows::ffi::OsStrExt;
+        tmp_name.encode_wide().next() == Some(b'.' as u16)
+    };
+    if !starts_with_dot {
         tmp_name.push(".");
     }
+
     tmp_name.push(name);
     tmp_name.push(".");
     tmp_name.push(random_suffix);
