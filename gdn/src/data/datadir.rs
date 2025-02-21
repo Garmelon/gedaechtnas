@@ -6,9 +6,9 @@ use std::{
     path::{Path, PathBuf},
 };
 
-use anyhow::{anyhow, bail, Context};
-use rand::{distr::Alphanumeric, Rng};
-use serde::{de::DeserializeOwned, Serialize};
+use anyhow::{Context, anyhow, bail};
+use rand::{Rng, distr::Alphanumeric};
+use serde::{Serialize, de::DeserializeOwned};
 
 use super::lockfile::LockFile;
 

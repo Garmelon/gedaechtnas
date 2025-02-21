@@ -10,7 +10,7 @@ use directories::ProjectDirs;
 
 pub use self::{
     datadir::{LockedDataDir, UnlockedDataDir},
-    v1::{load_state, save_state, VERSION},
+    v1::{VERSION, load_state, save_state},
 };
 
 fn migrate(dir: &LockedDataDir) -> anyhow::Result<()> {

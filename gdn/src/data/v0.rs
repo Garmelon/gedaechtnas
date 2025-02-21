@@ -1,6 +1,6 @@
 // Just the empty directory
 
-use super::{v1, LockedDataDir};
+use super::{LockedDataDir, v1};
 
 pub const VERSION: u32 = 0;
 

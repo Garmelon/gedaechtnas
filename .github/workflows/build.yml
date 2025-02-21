@@ -23,6 +23,9 @@ jobs:
         with:
           version: 10
 
+      - name: Set up rust
+        run: rustup update
+
       # https://github.com/tauri-apps/tauri-action?tab=readme-ov-file#usage
       # https://docs.github.com/en/actions/using-github-hosted-runners/using-github-hosted-runners/customizing-github-hosted-runners#installing-software-on-ubuntu-runners
       - name: Install tauri dependencies
@@ -51,6 +54,9 @@ jobs:
         uses: pnpm/action-setup@v4
         with:
           version: 10
+
+      - name: Set up rust
+        run: rustup update
 
       - name: Build
         run: ./meta/build
