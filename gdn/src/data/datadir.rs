@@ -78,17 +78,17 @@ impl UnlockedDataDir {
         &self.path
     }
 
-    fn version_file(&self) -> PathBuf {
+    fn path_version_file(&self) -> PathBuf {
         self.path.join("VERSION")
     }
 
-    fn lock_file(&self) -> PathBuf {
+    fn path_lock_file(&self) -> PathBuf {
         self.path.join("LOCK")
     }
 
     pub fn lock(self) -> anyhow::Result<LockedDataDir> {
         Ok(LockedDataDir {
-            lockfile: LockFile::lock(self.lock_file())?,
+            lockfile: LockFile::lock(self.path_lock_file())?,
             unlocked: self,
         })
     }
@@ -114,7 +114,7 @@ impl UnlockedDataDir {
     }
 
     pub(super) fn read_version(&self) -> anyhow::Result<u32> {
-        let path = self.version_file();
+        let path = self.path_version_file();
         match self.read_string_optional(&path)? {
             None if self.path.exists() => Err(anyhow!("found data dir without version number")),
             None => Ok(0),
@@ -129,7 +129,7 @@ impl UnlockedDataDir {
         if actual != expected {
             bail!(
                 "expected version {expected}, but found {actual} at {}",
-                self.version_file().display()
+                self.path_version_file().display()
             );
         }
         Ok(())
@@ -159,7 +159,7 @@ impl LockedDataDir {
     }
 
     pub(super) fn write_version(&self, version: u32) -> anyhow::Result<()> {
-        self.write_string(&self.version_file(), &format!("{version}\n"))
+        self.write_string(&self.path_version_file(), &format!("{version}\n"))
     }
 }
 
