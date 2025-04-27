@@ -1,10 +1,10 @@
-mod commands;
-
 use std::path::PathBuf;
 
 use clap::Parser;
 
 use crate::commands::Command;
+
+mod commands;
 
 /// GedächtNAS - external storage for your brain.
 #[derive(Debug, Parser)]

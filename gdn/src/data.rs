@@ -1,12 +1,12 @@
-mod datadir;
-mod lockfile;
-mod v0;
-mod v1;
-
 use std::path::PathBuf;
 
 use anyhow::Context;
 use directories::ProjectDirs;
+
+mod datadir;
+mod lockfile;
+mod v0;
+mod v1;
 
 pub use self::{
     datadir::{LockedDataDir, UnlockedDataDir},

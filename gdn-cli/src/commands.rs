@@ -1,8 +1,8 @@
-mod migrate;
-
 use clap::Parser;
 
 use crate::Environment;
+
+mod migrate;
 
 #[derive(Debug, Parser)]
 pub enum Command {
