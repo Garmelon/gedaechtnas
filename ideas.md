@@ -6,7 +6,6 @@ takes a short time to implement and represents an incremental improvement.
 
 Once an idea has been implemented, it should be deleted from this file.
 
-- cli: `status` command
 - cli: `repo list` command
 - cli: `repo add` command
 - cli: `repo rename` command
@@ -21,3 +20,8 @@ Once an idea has been implemented, it should be deleted from this file.
 - app: Save button
 - Try out `snafu`
 - Set up Android app building in CI (should be included in first release)
+- app: Path/history widget at the top of the screen
+- app: Show pinned message at bottom of screen
+- app: Gray out unusable sibling buttons when hovering over anchor note
+- app: Tooltips for note actions
+- app: Clickable parents
