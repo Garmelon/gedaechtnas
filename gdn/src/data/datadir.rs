@@ -87,6 +87,8 @@ impl UnlockedDataDir {
     }
 
     pub fn lock(self) -> anyhow::Result<LockedDataDir> {
+        fs::create_dir_all(self.path())?;
+
         Ok(LockedDataDir {
             lockfile: LockFile::lock(self.path_lock_file())?,
             unlocked: self,
@@ -116,7 +118,6 @@ impl UnlockedDataDir {
     pub(super) fn read_version(&self) -> anyhow::Result<u32> {
         let path = self.path_version_file();
         match self.read_string_optional(&path)? {
-            None if self.path.exists() => Err(anyhow!("found data dir without version number")),
             None => Ok(0),
             Some(string) => Ok(string.trim().parse().with_context(|| {
                 format!("failed to parse {} as version number", path.display())
