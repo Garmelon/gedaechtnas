@@ -6,6 +6,7 @@ edition = { workspace = true }
 [dependencies]
 anyhow = { workspace = true }
 directories = { workspace = true }
+git2 = { workspace = true }
 rand = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true }
