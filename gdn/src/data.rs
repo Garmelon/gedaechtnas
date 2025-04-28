@@ -10,7 +10,7 @@ mod v1;
 
 pub use self::{
     datadir::{LockedDataDir, UnlockedDataDir},
-    v1::{State, VERSION, load_state, save_state},
+    v1::{State, VERSION, load_state, tidy},
 };
 
 fn migrate(dir: &LockedDataDir) -> anyhow::Result<()> {
