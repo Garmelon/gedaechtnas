@@ -3,7 +3,10 @@ use std::{collections::HashMap, fs, path::PathBuf};
 use anyhow::anyhow;
 use serde::{Deserialize, Serialize};
 
-use crate::ids::RepoId;
+use crate::{
+    ids::RepoId,
+    repo::{self, Repo},
+};
 
 use super::{LockedDataDir, UnlockedDataDir};
 
@@ -22,6 +25,23 @@ impl State {
                 self.selected_repo = None;
             }
         }
+    }
+
+    pub fn resolve_repo_identifier(&self, identifier: &str) -> Option<RepoId> {
+        // If the identifier is a valid repo id, always interpret it as such.
+        // There must always be an unambiguous way to refer to repos.
+        if let Ok(id) = identifier.parse::<RepoId>() {
+            if self.repos.contains_key(&id) {
+                return Some(id);
+            }
+        }
+
+        // Otherwise, interpret the identifier as a repo name and find the
+        // corresponding id.
+        self.repos
+            .iter()
+            .find(|(_, name)| *name == identifier)
+            .map(|(id, _)| *id)
     }
 }
 
@@ -46,6 +66,14 @@ pub fn save_state(dir: &LockedDataDir, mut state: State) -> anyhow::Result<()> {
     dir.write_json(&state_file(dir), &state)
 }
 
+pub fn load_repo_version(dir: &UnlockedDataDir, id: RepoId) -> anyhow::Result<u32> {
+    repo::load_version(&repo_dir(dir, id))
+}
+
+pub fn load_repo(dir: &UnlockedDataDir, id: RepoId) -> anyhow::Result<Repo> {
+    repo::load(&repo_dir(dir, id))
+}
+
 pub fn add_repo(dir: &LockedDataDir, name: String) -> anyhow::Result<RepoId> {
     let id = RepoId::new();
 
@@ -53,8 +81,8 @@ pub fn add_repo(dir: &LockedDataDir, name: String) -> anyhow::Result<RepoId> {
     state.repos.insert(id, name);
     save_state(dir, state)?;
 
-    fs::create_dir_all(repos_dir(dir))?;
-    // TODO Initialize bare repo
+    repo::init(&repo_dir(dir, id))?;
+
     Ok(id)
 }
 

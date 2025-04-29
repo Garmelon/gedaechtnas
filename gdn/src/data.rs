@@ -8,9 +8,11 @@ mod lockfile;
 mod v0;
 mod v1;
 
+pub use crate::repo::VERSION as REPO_VERSION;
+
 pub use self::{
     datadir::{LockedDataDir, UnlockedDataDir},
-    v1::{State, VERSION, load_state, tidy},
+    v1::{State, VERSION, add_repo, load_repo, load_repo_version, load_state, tidy},
 };
 
 fn migrate(dir: &LockedDataDir) -> anyhow::Result<()> {

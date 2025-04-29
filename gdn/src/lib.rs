@@ -1,5 +1,6 @@
 pub mod data;
 pub mod ids;
+mod repo;
 
 pub const PROPER_NAME: &str = "GedächtNAS";
 pub const TECHNICAL_NAME: &str = "gedaechtnas";

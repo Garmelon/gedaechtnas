@@ -2,6 +2,7 @@ use clap::Parser;
 
 use crate::Environment;
 
+mod repo;
 mod status;
 mod tidy;
 
@@ -9,6 +10,10 @@ mod tidy;
 pub enum Command {
     Status(status::Command),
     Tidy(tidy::Command),
+    Repo {
+        #[command(subcommand)]
+        command: repo::Command,
+    },
 }
 
 impl Command {
@@ -16,6 +21,7 @@ impl Command {
         match self {
             Self::Status(command) => command.run(env),
             Self::Tidy(command) => command.run(env),
+            Self::Repo { command } => command.run(env),
         }
     }
 }
