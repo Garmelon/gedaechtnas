@@ -88,7 +88,7 @@ pub fn add_repo(dir: &LockedDataDir, name: String) -> anyhow::Result<RepoId> {
 
 pub fn remove_repo(dir: &LockedDataDir, id: RepoId) -> anyhow::Result<()> {
     let mut state = load_state(dir)?;
-    state.repos.remove(&id).is_none();
+    state.repos.remove(&id);
     save_state(dir, state)?;
 
     // TODO Check if this works with read-only files

@@ -23,7 +23,7 @@ impl Repo {
         todo!()
     }
 
-    pub fn migrate(self) -> super::Repo {
+    pub fn migrate(self) -> Self {
         self
     }
 }

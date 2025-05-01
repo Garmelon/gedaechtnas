@@ -6,7 +6,7 @@ use std::path::Path;
 use anyhow::{anyhow, bail};
 use git2::{ErrorCode, Repository};
 
-pub use self::v1::{Note, Repo, VERSION};
+pub use self::v1::{Repo, VERSION};
 
 const VERSION_FILE: &str = "VERSION";
 
