@@ -19,7 +19,7 @@ fn migrate(dir: &LockedDataDir) -> anyhow::Result<()> {
     loop {
         let version = dir.read_version().context("failed to migrate data dir")?;
         match version {
-            0 => v0::migrate(dir),
+            v0::VERSION => v0::migrate(dir),
             _ => break Ok(()),
         }
         .with_context(|| format!("failed to migrate data dir from version {version}"))?;

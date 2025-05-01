@@ -50,8 +50,8 @@ pub fn load(path: &Path) -> anyhow::Result<Repo> {
 
     #[expect(unused_qualifications)]
     let repo = match version {
-        0 => v0::Repo::load().migrate(),
-        1 => v1::Repo::load(&repository)?.migrate(),
+        v0::VERSION => v0::Repo::load().migrate(),
+        v1::VERSION => v1::Repo::load(&repository)?.migrate(),
         n => bail!("invalid repo version {n}"),
     };
 
