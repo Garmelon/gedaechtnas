@@ -1,6 +1,6 @@
 use clap::Parser;
 
-use crate::Environment;
+use crate::{Environment, commands::repo};
 
 /// Display current status.
 #[derive(Debug, Parser)]
@@ -24,18 +24,7 @@ impl Command {
         let state = gdn::data::load_state(&data)?;
 
         println!();
-        if state.repos.is_empty() {
-            println!("No repos");
-        } else {
-            println!("Repos ({}):", state.repos.len());
-            for (id, name) in &state.repos {
-                if state.selected_repo == Some(*id) {
-                    println!("- {name} ({id}, selected)");
-                } else {
-                    println!("- {name} ({id})");
-                }
-            }
-        }
+        repo::print_repo_list(&state);
 
         Ok(())
     }

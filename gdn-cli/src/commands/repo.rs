@@ -7,6 +7,8 @@ use clap::Parser;
 
 use crate::Environment;
 
+pub use self::list::print_repo_list;
+
 /// Perform repo operations.
 #[derive(Debug, Parser)]
 pub enum Command {
