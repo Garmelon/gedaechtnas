@@ -2,6 +2,7 @@ mod add;
 mod info;
 mod list;
 mod remove;
+mod select;
 
 use clap::Parser;
 
@@ -18,6 +19,9 @@ pub enum Command {
     #[command(visible_alias = "i")]
     Info(info::Command),
 
+    #[command(visible_alias = "s")]
+    Select(select::Command),
+
     #[command(visible_alias = "a")]
     Add(add::Command),
 
@@ -30,6 +34,7 @@ impl Command {
         match self {
             Self::List(command) => command.run(env),
             Self::Info(command) => command.run(env),
+            Self::Select(command) => command.run(env),
             Self::Add(command) => command.run(env),
             Self::Remove(command) => command.run(env),
         }

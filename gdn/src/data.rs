@@ -12,7 +12,10 @@ pub use crate::repo::VERSION as REPO_VERSION;
 
 pub use self::{
     datadir::{LockedDataDir, UnlockedDataDir},
-    v1::{State, VERSION, add_repo, load_repo, load_repo_version, load_state, remove_repo, tidy},
+    v1::{
+        State, VERSION, add_repo, load_repo, load_repo_version, load_state, remove_repo,
+        select_repo, tidy,
+    },
 };
 
 fn migrate(dir: &LockedDataDir) -> anyhow::Result<()> {
