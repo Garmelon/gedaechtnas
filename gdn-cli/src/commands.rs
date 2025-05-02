@@ -10,10 +10,8 @@ mod tidy;
 pub enum Command {
     Status(status::Command),
     Tidy(tidy::Command),
-    Repo {
-        #[command(subcommand)]
-        command: repo::Command,
-    },
+    #[command(subcommand)]
+    Repo(repo::Command),
 }
 
 impl Command {
@@ -21,7 +19,7 @@ impl Command {
         match self {
             Self::Status(command) => command.run(env),
             Self::Tidy(command) => command.run(env),
-            Self::Repo { command } => command.run(env),
+            Self::Repo(command) => command.run(env),
         }
     }
 }
