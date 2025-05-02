@@ -38,10 +38,18 @@ impl State {
 
         // Otherwise, interpret the identifier as a repo name and find the
         // corresponding id.
-        self.repos
+        let matching = self
+            .repos
             .iter()
-            .find(|(_, name)| *name == identifier)
+            .filter(|(_, name)| *name == identifier)
             .map(|(id, _)| *id)
+            .collect::<Vec<_>>();
+
+        match matching.first() {
+            None => None,
+            Some(_) if matching.len() > 1 => None,
+            Some(id) => Some(*id),
+        }
     }
 }
 
