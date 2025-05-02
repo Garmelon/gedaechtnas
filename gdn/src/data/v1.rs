@@ -91,7 +91,8 @@ pub fn remove_repo(dir: &LockedDataDir, id: RepoId) -> anyhow::Result<()> {
     state.repos.remove(&id);
     save_state(dir, state)?;
 
-    // TODO Check if this works with read-only files
+    // This seems to work even with read-only files, so it should work fine for
+    // bare git repos. I don't expect to encounter read-only directories.
     fs::remove_dir_all(repo_dir(dir, id))?;
 
     Ok(())

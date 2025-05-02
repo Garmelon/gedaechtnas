@@ -1,4 +1,5 @@
 mod add;
+mod remove;
 mod show;
 
 use clap::Parser;
@@ -10,6 +11,7 @@ use crate::Environment;
 pub enum Command {
     Show(show::Command),
     Add(add::Command),
+    Remove(remove::Command),
 }
 
 impl Command {
@@ -17,6 +19,7 @@ impl Command {
         match self {
             Self::Show(command) => command.run(env),
             Self::Add(command) => command.run(env),
+            Self::Remove(command) => command.run(env),
         }
     }
 }
