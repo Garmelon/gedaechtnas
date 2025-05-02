@@ -23,7 +23,11 @@ impl Command {
         } else {
             println!("Repos: {}", repos.len());
             for (name, id) in repos {
-                println!("- {name} ({id })")
+                if state.selected_repo == Some(id) {
+                    println!("- {name} ({id }, selected)");
+                } else {
+                    println!("- {name} ({id })");
+                }
             }
         }
 
