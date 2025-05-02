@@ -8,9 +8,14 @@ mod tidy;
 
 #[derive(Debug, Parser)]
 pub enum Command {
+    #[command(visible_alias = "s")]
     Status(status::Command),
+
+    #[command(visible_alias = "t")]
     Tidy(tidy::Command),
+
     #[command(subcommand)]
+    #[command(visible_alias = "r")]
     Repo(repo::Command),
 }
 

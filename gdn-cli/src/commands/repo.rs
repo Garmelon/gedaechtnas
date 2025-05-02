@@ -10,9 +10,16 @@ use crate::Environment;
 /// Perform repo operations.
 #[derive(Debug, Parser)]
 pub enum Command {
+    #[command(visible_alias = "l")]
     List(list::Command),
+
+    #[command(visible_alias = "s")]
     Show(show::Command),
+
+    #[command(visible_alias = "a")]
     Add(add::Command),
+
+    #[command(visible_alias = "r")]
     Remove(remove::Command),
 }
 
