@@ -28,7 +28,6 @@ fn run() -> anyhow::Result<()> {
         data_dir: gdn::data::path()?,
     };
 
-    println!("Data dir: {}", env.data_dir.display());
     args.cmd.run(&env)?;
     Ok(())
 }

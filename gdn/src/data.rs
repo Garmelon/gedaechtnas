@@ -26,6 +26,12 @@ fn migrate(dir: &LockedDataDir) -> anyhow::Result<()> {
     }
 }
 
+pub fn read_version(path: PathBuf) -> anyhow::Result<u32> {
+    let dir = UnlockedDataDir::new(path);
+    let version = dir.read_version()?;
+    Ok(version)
+}
+
 pub fn open(path: PathBuf) -> anyhow::Result<UnlockedDataDir> {
     let dir = UnlockedDataDir::new(path);
     dir.require_version(VERSION)?;
