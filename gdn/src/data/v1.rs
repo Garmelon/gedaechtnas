@@ -129,7 +129,7 @@ pub fn select_repo(dir: &LockedDataDir, id: Option<RepoId>) -> anyhow::Result<()
 }
 
 pub fn tidy(dir: &LockedDataDir) -> anyhow::Result<()> {
-    let state = load_state(dir)?;
+    let _state = load_state(dir)?;
 
     // TODO Detect repo dirs that should not exist, and let the user now.
     //
