@@ -69,12 +69,50 @@ jobs:
             target/release/gdn-cli.exe
             target/release/gdn-app.exe
 
+  build-android:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v4
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      # https://v2.tauri.app/start/prerequisites/#android
+      - name: Set up rust
+        run: |
+          rustup update
+          rustup target add aarch64-linux-android armv7-linux-androideabi i686-linux-android x86_64-linux-android
+
+      # https://v2.tauri.app/distribute/sign/android/
+      - name: Set up Android signing
+        run: |
+          cd gdn-app/src-tauri/gen/android
+          echo "keyAlias=${{ secrets.ANDROID_KEY_ALIAS }}" > key.properties
+          echo "password=${{ secrets.ANDROID_KEY_PASSWORD }}" >> key.properties
+          base64 -d <<< "${{ secrets.ANDROID_KEY_BASE64 }}" > $RUNNER_TEMP/keystore.jks
+          echo "storeFile=$RUNNER_TEMP/keystore.jks" >> key.properties
+
+      - name: Build
+        run: |
+          export NDK_HOME="$ANDROID_NDK_HOME"
+          ./meta/build-android
+
+      - name: Upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: gdn-android
+          path: target/release/gdn-app.apk
+
   release:
     runs-on: ubuntu-latest
     if: ${{ startsWith(github.ref, 'refs/tags/v') }}
     needs:
       - build-linux
       - build-windows
+      - build-android
     permissions:
       contents: write
     steps:
@@ -85,6 +123,7 @@ jobs:
         run: |
           zip -r gdn-linux.zip gdn-linux
           zip -r gdn-windows.zip gdn-windows
+          mv gdn-android/gdn-app.apk gdn-android.apk
 
       - name: Create new release
         uses: softprops/action-gh-release@v2
@@ -93,3 +132,4 @@ jobs:
           files: |
             gdn-linux.zip
             gdn-windows.zip
+            gdn-android.apk
