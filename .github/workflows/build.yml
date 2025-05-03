@@ -18,6 +18,11 @@ jobs:
       - name: Check out repo
         uses: actions/checkout@v4
 
+      - name: Update packages
+        run: |
+          sudo apt update
+          sudo apt upgrade
+
       - name: Set up pnpm
         uses: pnpm/action-setup@v4
         with:
@@ -29,9 +34,7 @@ jobs:
       # https://github.com/tauri-apps/tauri-action?tab=readme-ov-file#usage
       # https://docs.github.com/en/actions/using-github-hosted-runners/using-github-hosted-runners/customizing-github-hosted-runners#installing-software-on-ubuntu-runners
       - name: Install tauri dependencies
-        run: |
-          sudo apt update
-          sudo apt install libwebkit2gtk-4.1-dev
+        run: sudo apt install libwebkit2gtk-4.1-dev
 
       - name: Build
         run: ./meta/build
@@ -49,6 +52,11 @@ jobs:
     steps:
       - name: Check out repo
         uses: actions/checkout@v4
+
+      - name: Update packages
+        run: |
+          sudo apt update
+          sudo apt upgrade
 
       - name: Set up pnpm
         uses: pnpm/action-setup@v4
@@ -74,6 +82,11 @@ jobs:
     steps:
       - name: Check out repo
         uses: actions/checkout@v4
+
+      - name: Update packages
+        run: |
+          sudo apt update
+          sudo apt upgrade
 
       - name: Set up pnpm
         uses: pnpm/action-setup@v4
