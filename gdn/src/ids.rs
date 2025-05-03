@@ -1,5 +1,6 @@
-use std::{fmt, ops::Shl, str::FromStr, time::SystemTime};
+use std::{fmt, str::FromStr};
 
+use jiff::{Timestamp, Zoned, tz::TimeZone};
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
 /// A timestamp- and randomness-based id.
@@ -13,19 +14,18 @@ struct TimestampId(u64);
 
 impl TimestampId {
     fn new() -> Self {
-        let secs = SystemTime::now()
-            .duration_since(SystemTime::UNIX_EPOCH)
-            .expect("duration is positive")
-            .as_secs();
+        let secs: u64 = Timestamp::now()
+            .as_second()
+            .try_into()
+            .expect("timestamp out of range");
+        assert!(secs < 0x000000FF_FFFFFFFF_u64, "timestamp out of range");
+        let random = rand::random::<u64>() & 0x00000000_00FFFFFF_u64;
+        Self(secs << (3 * 8) | random)
+    }
 
-        let random = rand::random::<u64>();
-
-        // Zeroing the last three bytes just in case. They should already be
-        // zero under normal circumstances.
-        let first_part = secs.shl(3 * 8) & 0xFFFFFFFF_FF000000_u64;
-        let second_part = random & 0x00000000_00FFFFFF_u64;
-
-        Self(first_part | second_part)
+    fn timestamp(self) -> Timestamp {
+        let secs = self.0 >> (3 * 8);
+        Timestamp::from_second(secs as i64).expect("timestamp out of range")
     }
 }
 
@@ -61,6 +61,14 @@ impl NoteId {
     #[allow(clippy::new_without_default)] // Because side-effects
     pub fn new() -> Self {
         Self(TimestampId::new())
+    }
+
+    pub fn timestamp(self) -> Timestamp {
+        self.0.timestamp()
+    }
+
+    pub fn time_utc(self) -> Zoned {
+        self.timestamp().to_zoned(TimeZone::UTC)
     }
 }
 

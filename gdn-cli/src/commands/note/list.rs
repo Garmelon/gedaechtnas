@@ -14,18 +14,17 @@ impl Command {
             println!("No repo selected");
             return Ok(());
         };
-        let repo = gdn::data::load_repo(&data, selected)?;
-        let mut notes = repo.notes.into_iter().collect::<Vec<_>>();
-        notes.sort_unstable_by_key(|(id, _)| *id);
+        let mut repo = gdn::data::load_repo(&data, selected)?;
+        repo.notes.sort_unstable_by_key(|it| it.id);
 
-        if notes.is_empty() {
+        if repo.notes.is_empty() {
             println!("No notes");
             return Ok(());
         }
 
-        for (id, note) in notes {
+        for note in repo.notes {
             if note.children.is_empty() {
-                println!("{id}: {}", note.text);
+                println!("{}: {}", note.id, note.text);
             } else {
                 let children = note
                     .children
@@ -33,7 +32,7 @@ impl Command {
                     .map(|it| it.to_string())
                     .collect::<Vec<_>>()
                     .join(", ");
-                println!("{id}: {} [{children}]", note.text);
+                println!("{}: {} [{children}]", note.id, note.text);
             }
         }
 

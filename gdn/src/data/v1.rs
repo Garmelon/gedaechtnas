@@ -1,6 +1,7 @@
 use std::{collections::HashMap, fs, path::PathBuf};
 
 use anyhow::anyhow;
+use git2::Oid;
 use serde::{Deserialize, Serialize};
 
 use crate::{
@@ -80,6 +81,10 @@ pub fn load_repo_version(dir: &UnlockedDataDir, id: RepoId) -> anyhow::Result<u3
 
 pub fn load_repo(dir: &UnlockedDataDir, id: RepoId) -> anyhow::Result<Repo> {
     repo::load(&repo_dir(dir, id))
+}
+
+pub fn save_repo(dir: &LockedDataDir, id: RepoId, repo: Repo) -> anyhow::Result<Oid> {
+    repo::save(&repo_dir(dir, id), repo)
 }
 
 pub fn add_repo(dir: &LockedDataDir, name: String) -> anyhow::Result<RepoId> {

@@ -1,5 +1,3 @@
-use std::collections::HashMap;
-
 use super::v1;
 
 pub const VERSION: u32 = 0;
@@ -12,9 +10,6 @@ impl Repo {
     }
 
     pub fn migrate(self) -> super::Repo {
-        v1::Repo {
-            notes: HashMap::new(),
-        }
-        .migrate()
+        v1::Repo { notes: vec![] }.migrate()
     }
 }
