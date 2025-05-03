@@ -4,7 +4,7 @@ mod v1;
 use std::path::Path;
 
 use anyhow::{anyhow, bail};
-use git2::{Commit, ErrorCode, Oid, Reference, Repository};
+use git2::{Commit, ErrorCode, FileMode, Oid, Reference, Repository, TreeBuilder};
 use jiff::Zoned;
 
 pub use self::v1::{Note, Repo, VERSION};
@@ -40,6 +40,12 @@ fn read_version(repository: &Repository, commit: &Commit<'_>) -> anyhow::Result<
     Ok(version)
 }
 
+fn write_version(repository: &Repository, tree: &mut TreeBuilder<'_>) -> anyhow::Result<()> {
+    let oid = repository.blob(VERSION.to_string().as_bytes())?;
+    tree.insert(VERSION_FILE, oid, FileMode::Blob.into())?;
+    Ok(())
+}
+
 pub fn load_version(path: &Path) -> anyhow::Result<u32> {
     let repository = Repository::open_bare(path)?;
     let Some(head) = read_head(&repository)? else {
@@ -71,7 +77,10 @@ pub fn load(path: &Path) -> anyhow::Result<Repo> {
 pub fn save(path: &Path, repo: Repo) -> anyhow::Result<Oid> {
     let repository = Repository::open_bare(path)?;
 
-    let tree = repo.save_to_tree(&repository)?;
+    let mut tree = repository.treebuilder(None)?;
+    write_version(&repository, &mut tree)?;
+    repo.save_to_tree(&repository, &mut tree)?;
+    let tree = repository.find_tree(tree.write()?)?;
 
     let signature = repository.signature()?;
     let message = Zoned::now().to_string();

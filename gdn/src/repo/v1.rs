@@ -79,10 +79,13 @@ impl Repo {
         Ok(Self { notes })
     }
 
-    pub fn save_to_tree(mut self, repository: &Repository) -> anyhow::Result<Tree<'_>> {
+    pub fn save_to_tree(
+        mut self,
+        repository: &Repository,
+        tree: &mut TreeBuilder<'_>,
+    ) -> anyhow::Result<()> {
         self.notes.sort_unstable_by_key(|it| it.id);
 
-        let mut root_tree = repository.treebuilder(None)?;
         let mut year = 0;
         let mut year_tree = repository.treebuilder(None)?;
         let mut month = 0;
@@ -106,7 +109,7 @@ impl Repo {
             }
 
             if year != time.year() {
-                add_tree_to_tree(&mut root_tree, &year_tree, format!("{year:04}"))?;
+                add_tree_to_tree(tree, &year_tree, format!("{year:04}"))?;
                 year_tree.clear()?;
                 year = time.year();
             }
@@ -116,10 +119,9 @@ impl Repo {
 
         add_tree_to_tree(&mut month_tree, &day_tree, format!("{day:02}"))?;
         add_tree_to_tree(&mut year_tree, &month_tree, format!("{month:02}"))?;
-        add_tree_to_tree(&mut root_tree, &year_tree, format!("{year:04}"))?;
+        add_tree_to_tree(tree, &year_tree, format!("{year:04}"))?;
 
-        let tree = repository.find_tree(root_tree.write()?)?;
-        Ok(tree)
+        Ok(())
     }
 
     pub fn migrate(self) -> Self {
