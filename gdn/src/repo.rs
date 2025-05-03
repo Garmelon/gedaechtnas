@@ -7,7 +7,7 @@ use anyhow::{anyhow, bail};
 use git2::{Commit, ErrorCode, Oid, Reference, Repository};
 use jiff::Zoned;
 
-pub use self::v1::{Repo, VERSION};
+pub use self::v1::{Note, Repo, VERSION};
 
 const VERSION_FILE: &str = "VERSION";
 

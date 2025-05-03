@@ -2,7 +2,7 @@ use clap::Parser;
 
 use crate::Environment;
 
-/// List all notes in the current repository.
+/// List all notes in the selected repository.
 #[derive(Debug, Parser)]
 pub struct Command {}
 
