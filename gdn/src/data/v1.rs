@@ -111,7 +111,7 @@ pub fn remove_repo(dir: &LockedDataDir, id: RepoId) -> anyhow::Result<()> {
     Ok(())
 }
 
-pub fn set_repo_name(dir: &LockedDataDir, id: RepoId, name: String) -> anyhow::Result<()> {
+pub fn rename_repo(dir: &LockedDataDir, id: RepoId, name: String) -> anyhow::Result<()> {
     let mut state = load_state(dir)?;
     *state
         .repos
