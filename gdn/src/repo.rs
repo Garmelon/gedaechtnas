@@ -86,6 +86,7 @@ pub fn save(path: &Path, repo: Repo) -> anyhow::Result<Oid> {
     let message = Zoned::now().to_string();
 
     // TODO Check that the repo is actually based on this commit.
+    // TODO Check if there actually is a difference to the parent commit
     let parent = match read_head(&repository)? {
         None => None,
         Some(parent) => Some(parent.peel_to_commit()?),

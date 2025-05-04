@@ -6,11 +6,6 @@ takes a short time to implement and represents an incremental improvement.
 
 Once an idea has been implemented, it should be deleted from this file.
 
-- cli: `repo list` command
-- cli: `repo add` command
-- cli: `repo rename` command
-- cli: `repo remove` command
-- cli: Single-letter aliases for commands
 - Logging (`log` or `tracing`?)
 - app: Make log available in UI, for debugging and testing
 - app: Create repo from dropdown
