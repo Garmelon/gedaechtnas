@@ -1,9 +1,9 @@
+use serde_json as _; // Silence unused dependency warning
 use std::sync::{Arc, Mutex};
 
-use store::Store;
+use gdn::store::Store;
 
 mod api;
-pub mod store;
 mod types;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]

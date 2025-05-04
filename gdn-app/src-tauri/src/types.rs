@@ -1,6 +1,6 @@
 use std::collections::HashSet;
 
-use gdn::ids::NoteId;
+use gdn::{ids::NoteId, store::RichNote};
 use serde::Serialize;
 
 #[derive(Serialize)]
@@ -10,6 +10,17 @@ pub struct Note {
     pub text: String,
     pub children: Vec<NoteId>,
     pub parents: HashSet<NoteId>,
+}
+
+impl From<RichNote> for Note {
+    fn from(value: RichNote) -> Self {
+        Self {
+            id: value.id,
+            text: value.text,
+            children: value.children,
+            parents: value.parents,
+        }
+    }
 }
 
 ////////////

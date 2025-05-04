@@ -1,27 +1,77 @@
 use std::collections::{HashMap, HashSet};
 
-use gdn::ids::NoteId;
+use crate::{
+    ids::NoteId,
+    repo::{Note, Repo},
+};
 
-use crate::types::Note;
-
-#[derive(Debug)]
-pub struct NoteInfo {
+#[derive(Clone)]
+pub struct RawNote {
     pub text: String,
     pub children: Vec<NoteId>,
 }
 
-/// A note store for testing.
+impl RawNote {
+    pub fn load(note: Note) -> Self {
+        Self {
+            text: note.text,
+            children: note.children,
+        }
+    }
+
+    pub fn save(self, id: NoteId) -> Note {
+        Note {
+            id,
+            text: self.text,
+            children: self.children,
+        }
+    }
+}
+
+#[derive(Clone)]
+pub struct RichNote {
+    pub id: NoteId,
+    pub text: String,
+    pub children: Vec<NoteId>,
+    pub parents: HashSet<NoteId>,
+}
+
 #[derive(Default)]
 pub struct Store {
     last_id: u64,
     curr_id: u64,
-    notes: HashMap<NoteId, NoteInfo>,
+    notes: HashMap<NoteId, RawNote>,
     parents: HashMap<NoteId, HashMap<NoteId, usize>>,
 }
 
 impl Store {
     pub fn new() -> Self {
         Self::default()
+    }
+
+    pub fn load(repo: Repo) -> Self {
+        let notes = repo
+            .notes
+            .into_iter()
+            .map(|note| (note.id, RawNote::load(note)))
+            .collect::<HashMap<_, _>>();
+
+        let mut result = Self {
+            notes,
+            ..Self::default()
+        };
+        result.make_consistent_and_tick();
+        result
+    }
+
+    pub fn save(&self) -> Repo {
+        let notes = self
+            .notes
+            .iter()
+            .map(|(id, note)| note.clone().save(*id))
+            .collect::<Vec<_>>();
+
+        Repo { notes }
     }
 
     pub fn needs_update(&self) -> Option<u64> {
@@ -36,7 +86,7 @@ impl Store {
         self.last_id = self.curr_id;
     }
 
-    pub fn get(&self, id: NoteId) -> Option<Note> {
+    pub fn get(&self, id: NoteId) -> Option<RichNote> {
         let info = self.notes.get(&id)?;
 
         let parents = self
@@ -45,7 +95,7 @@ impl Store {
             .map(|ps| ps.keys().copied().collect::<HashSet<_>>())
             .unwrap_or_default();
 
-        Some(Note {
+        Some(RichNote {
             id,
             text: info.text.clone(),
             children: info.children.clone(),
@@ -82,18 +132,18 @@ impl Store {
 
     pub fn create(&mut self, text: String) -> NoteId {
         let id = NoteId::new();
-        let info = NoteInfo {
+        let note = RawNote {
             text,
             children: vec![],
         };
 
-        self.notes.insert(id, info);
+        self.notes.insert(id, note);
         self.make_consistent_and_tick();
 
         id
     }
 
-    pub fn delete(&mut self, id: NoteId) -> Option<NoteInfo> {
+    pub fn delete(&mut self, id: NoteId) -> Option<RawNote> {
         let info = self.notes.remove(&id)?;
         self.make_consistent_and_tick();
         Some(info)

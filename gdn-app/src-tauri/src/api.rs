@@ -1,12 +1,9 @@
 use std::sync::{Arc, Mutex};
 
-use gdn::ids::NoteId;
+use gdn::{ids::NoteId, store::Store};
 use tauri::{AppHandle, Emitter, State};
 
-use crate::{
-    store::Store,
-    types::{EventNotesStoreUpdate, Note},
-};
+use crate::types::{EventNotesStoreUpdate, Note};
 
 // API methods are sorted alphabetically.
 
@@ -76,7 +73,7 @@ pub fn note_create(text: String, app: AppHandle, store: State<'_, Arc<Mutex<Stor
     let mut guard = store.lock().unwrap();
     let id = guard.create(text);
     update_if_required(&mut guard, &app);
-    guard.get(id).unwrap()
+    guard.get(id).unwrap().into()
 }
 
 #[tauri::command]
@@ -89,7 +86,7 @@ pub fn note_delete(id: NoteId, app: AppHandle, store: State<'_, Arc<Mutex<Store>
 #[tauri::command]
 pub fn note_get(id: NoteId, store: State<'_, Arc<Mutex<Store>>>) -> Option<Note> {
     let guard = store.lock().unwrap();
-    guard.get(id)
+    guard.get(id).map(|it| it.into())
 }
 
 #[tauri::command]
