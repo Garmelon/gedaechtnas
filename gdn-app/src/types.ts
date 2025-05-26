@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from "zod/v4";
 
 export type NodeId = z.infer<typeof NodeId>;
 export const NodeId = z.string().startsWith("n").length(17);
