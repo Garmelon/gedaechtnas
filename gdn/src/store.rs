@@ -38,8 +38,7 @@ pub struct RichNote {
 
 #[derive(Default)]
 pub struct Store {
-    last_id: u64,
-    curr_id: u64,
+    id: u64,
     notes: HashMap<NoteId, RawNote>,
     parents: HashMap<NoteId, HashMap<NoteId, usize>>,
 }
@@ -74,16 +73,8 @@ impl Store {
         Repo { notes }
     }
 
-    pub fn needs_update(&self) -> Option<u64> {
-        if self.last_id != self.curr_id {
-            Some(self.curr_id)
-        } else {
-            None
-        }
-    }
-
-    pub fn update(&mut self) {
-        self.last_id = self.curr_id;
+    pub fn id(&self) -> u64 {
+        self.id
     }
 
     pub fn get(&self, id: NoteId) -> Option<RichNote> {
@@ -104,7 +95,7 @@ impl Store {
     }
 
     fn tick(&mut self) {
-        self.curr_id += 1;
+        self.id += 1;
     }
 
     fn make_consistent_and_tick(&mut self) {

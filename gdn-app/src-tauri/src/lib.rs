@@ -1,16 +1,21 @@
 use serde_json as _; // Silence unused dependency warning
 use std::sync::{Arc, Mutex};
 
-use gdn::store::Store;
+use crate::state::AppState;
 
 mod api;
+mod state;
 mod types;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
+    let state = Arc::new(Mutex::new(AppState::new()));
+
+    // TODO Launch store loading task
+
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
-        .manage(Arc::new(Mutex::new(Store::new())))
+        .manage(state)
         .invoke_handler(tauri::generate_handler![
             api::note_child_add,
             api::note_child_move,
